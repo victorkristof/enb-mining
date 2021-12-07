@@ -50,11 +50,15 @@ class Client:
         coverage = soup.find('div', id='tab-by-date')
         issues = list()
         for section in coverage.find_all('section'):
+            issue_type = self._get_issue_type(section)
+            # Skip issues that report highlights.
+            if issue_type is None:
+                continue
             issues.append(
                 {
-                    'issue_date': self._get_issue_date(section),
-                    'issue_type': self._get_issue_type(section),
                     'url': self._get_issue_url(section),
+                    'issue_date': self._get_issue_date(section),
+                    'issue_type': issue_type,
                     'location': location,
                 }
             )
