@@ -58,7 +58,7 @@ class Client:
                 {
                     'url': self._get_issue_url(section),
                     'issue_date': self._get_issue_date(section),
-                    'issue_type': issue_type,
+                    'type': issue_type,
                     'location': location,
                 }
             )
