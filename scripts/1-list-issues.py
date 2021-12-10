@@ -1,5 +1,6 @@
 import fire
-from enbmining import Client, save_csv
+from enbmining import Client
+from enbmining.utils import save_csv
 
 
 def main(output_path, debug=False):
