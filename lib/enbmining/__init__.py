@@ -1,2 +1,2 @@
 from .client import Client
-from .scraper import Intervention, InterventionScraper
+from .scraper import InteractionScraper, Intervention, InterventionScraper

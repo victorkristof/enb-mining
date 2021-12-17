@@ -1,21 +1,6 @@
-import glob
-from pathlib import Path
-
 import fire
 from enbmining import Intervention, InterventionScraper
-from enbmining.utils import load_csv, print_progress
-
-
-def load_entities(path):
-    path = Path(path)
-    with path.open() as f:
-        return [e.strip() for e in f.readlines()]
-
-
-def load_html(html_folder, issue_id):
-    path = html_folder / Path(issue_id).with_suffix('.html')
-    with path.open() as f:
-        return f.read()
+from enbmining.utils import load_csv, load_entities, load_html, print_progress
 
 
 def main(html_folder, issues_path, entities_path, output_path):

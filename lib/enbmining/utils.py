@@ -1,4 +1,5 @@
 import csv
+import itertools
 from pathlib import Path
 
 
@@ -25,8 +26,24 @@ def load_csv(path):
         ]
 
 
+def load_entities(path):
+    path = Path(path)
+    with path.open() as f:
+        return [e.strip() for e in f.readlines()]
+
+
+def load_html(html_folder, issue_id):
+    path = html_folder / Path(issue_id).with_suffix('.html')
+    with path.open() as f:
+        return f.read()
+
+
 def print_progress(index, array, every_n=None):
     if every_n is not None and (
         index % every_n == 0 or index == len(array) - 1
     ):
         print(f'{(index+1)/len(array)*100:.0f}%', end='\r')
+
+
+def combine(array1, array2):
+    return list(itertools.product(array1, array2))
