@@ -3,7 +3,7 @@ from itertools import chain
 
 import nltk
 
-from .interactions import OnBehalf
+from .interactions import OnBehalf, Support
 
 ABBREV = set(
     [
@@ -24,12 +24,11 @@ ABBREV = set(
 
 INTERACTIONS = [
     OnBehalf,
+    Support,
     # ('spoke', 'with'),
     # ('spoke', 'with', 'the'),
     # ('concerns', 'of'),
     # ('concerns', 'of', 'the'),
-    # ('supported', 'by'),
-    # ('supported', 'by', 'the'),
     # ('opposed', 'by'),
     # ('opposed', 'by', 'the'),
     # ('proposed', 'by'),
@@ -38,6 +37,9 @@ INTERACTIONS = [
 
 
 class SentenceTokenizer:
+
+    """A tokenizer for sentences in a paragraph."""
+
     def __init__(self):
         sentence_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
         sentence_tokenizer._params.abbrev_types.update(ABBREV)
@@ -53,8 +55,8 @@ class SentenceTokenizer:
 
 class WordTokenizer:
 
-    """A tokenizer that accounts for multi-word entities (countries, agencies,
-    party groupings, etc., such as 'United Kingdom')."""
+    """A word tokenizer that accounts for multi-word entities (countries,
+    agencies, party groupings, etc., such as 'United Kingdom')."""
 
     def __init__(self, entities):
         """Initializes a tokenizer from a set of entities."""

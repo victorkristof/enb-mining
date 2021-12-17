@@ -1,17 +1,16 @@
 import re
-from itertools import chain
 
 from bs4 import BeautifulSoup
 
-from .interactions import \
-    OnBehalf  # Agreement, Cooperation, Criticism, Opposition, Support
+from .interactions import (  # Agreement, Cooperation, Criticism, Opposition,
+    OnBehalf, Support)
 from .interventions import Intervention
-from .nlp import (InteractionTokenizer, POSTagger, SentenceTokenizer,
-                  WordTokenizer)
+from .nlp import POSTagger, SentenceTokenizer, WordTokenizer
+from .utils import flatten
 
 INTERACTIONS = [
     OnBehalf,
-    # Support,
+    Support,
     # Agreement,
     # Opposition,
     # Criticism,
@@ -51,7 +50,7 @@ class Scraper:
             for sentence in self.extract_sentences()
         ]
         # Flatten this nested list.
-        return list(chain.from_iterable(scraped))
+        return flatten(scraped)
 
     def _clean(self, text):
         # Remove exclamation marks from names (for sentence tokenizer).

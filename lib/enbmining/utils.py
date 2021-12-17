@@ -1,5 +1,6 @@
 import csv
 import itertools
+from itertools import chain
 from pathlib import Path
 
 
@@ -46,4 +47,9 @@ def print_progress(index, array, every_n=None):
 
 
 def combine(array1, array2):
+    """Generates all pairs of elements in two arrays."""
     return list(itertools.product(array1, array2))
+
+
+def flatten(iterable):
+    return list(chain.from_iterable(iterable))
