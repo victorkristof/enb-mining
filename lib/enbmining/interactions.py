@@ -102,7 +102,7 @@ class Interaction:
 class OnBehalf(Interaction):
 
     tag = 'OBH'
-    tokens = [
+    markers = [
         'also on behalf of',
         'on behalf of',
         'on behalf of the',
@@ -139,7 +139,7 @@ class OnBehalf(Interaction):
 class Support(Interaction):
 
     tag = 'SUP'
-    tokens = [
+    markers = [
         'Supported by',
         'supported by',
         'supported by the',
@@ -151,11 +151,43 @@ class Support(Interaction):
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
             'aggregator': 'markedsubtree2instances',
-            'args': {'inverse': True},
+            'args': {'inverse': True},  # Inverse entites A and B.
         }
     ]
     # Match "Supported by B[,C, and D], A".
     chunk_rules = [ChunkRule(r'^<SUP><ENT>+(<CC><ENT>)?<ENT>', 'Support')]
+    parsers.append(
+        {
+            'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
+            'aggregator': 'inversedsubtree2instances',
+        }
+    )
+
+    def __init__(self, entity_a, entity_b, sentence, issue):
+        super().__init__(entity_a, entity_b, sentence, issue)
+        self.type = self.__class__.__name__
+
+
+class Opposition(Interaction):
+
+    tag = 'OPP'
+    markers = [
+        'Opposed by',
+        'opposed by',
+        'opposed by the',
+    ]
+
+    # Match "A opposed by B[, C, and D]" and similar.
+    chunk_rules = [ChunkRule(r'<ENT><OPP><ENT>+(<CC><ENT>)?', 'Opposed')]
+    parsers = [
+        {
+            'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
+            'aggregator': 'markedsubtree2instances',
+            'args': {'inverse': True},  # Inverse entites A and B.
+        }
+    ]
+    # Match "Opposed by B[,C, and D], A".
+    chunk_rules = [ChunkRule(r'^<OPP><ENT>+(<CC><ENT>)?<ENT>', 'Opposed')]
     parsers.append(
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
