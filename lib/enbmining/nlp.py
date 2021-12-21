@@ -3,7 +3,8 @@ from itertools import chain
 
 import nltk
 
-from .interactions import Agreement, OnBehalf, Opposition, Support
+from .interaction_parsers import (AgreementParser, OnBehalfParser,
+                                  OppositionParser, SupportParser)
 
 ABBREV = set(
     [
@@ -22,11 +23,11 @@ ABBREV = set(
     ]
 )
 
-INTERACTIONS = [
-    OnBehalf,
-    Support,
-    Opposition,
-    Agreement,
+PARSERS = [
+    OnBehalfParser,
+    SupportParser,
+    OppositionParser,
+    AgreementParser,
 ]
 
 
@@ -70,9 +71,7 @@ class InteractionTokenizer:
     """A tokenizer that combines entities and markers of interactions."""
 
     def __init__(self, entities):
-        markers = [
-            mk for interaction in INTERACTIONS for mk in interaction.markers
-        ]
+        markers = [mk for parser in PARSERS for mk in parser.markers]
         self.tokenizer = WordTokenizer(list(chain(entities, markers)))
 
     def tokenize(self, text):
@@ -89,9 +88,9 @@ class POSTagger:
         model = dict()
         for entity in entities:
             model[entity] = 'ENT'
-        for interaction in INTERACTIONS:
-            for marker in interaction.markers:
-                model[marker] = interaction.tag
+        for parser in PARSERS:
+            for marker in parser.markers:
+                model[marker] = parser.tag
         return model
 
     def _retag_with_model(self, tagged):

@@ -1,53 +1,34 @@
 from nltk.chunk.regexp import ChunkRule, RegexpChunkParser
 
-from .utils import combine, flatten, save_csv
+from .data import Interaction
+from .utils import combine, flatten
 
 
-class Interaction:
-    def __init__(self, entity_a, entity_b, sentence, issue):
-        self.entity_a = entity_a
-        self.entity_b = entity_b
+class InteractionParser:
+    def __init__(self, sentence, issue, interaction_type):
         self.sentence = sentence
-        self.date = issue['issue_date']
-        self.issue_id = int(issue['id'])
+        self.issue = issue
+        self.type = interaction_type
 
-    @staticmethod
-    def to_csv(interactions, path):
-        keys = ['issue_id', 'entity_a', 'entity_b', 'type', 'date', 'sentence']
-        # Create dicts of interventions.
-        dicts = [{k: getattr(intv, k) for k in keys} for intv in interactions]
-        # Add ID.
-        dicts = [d | {'id': i + 1} for i, d in enumerate(dicts)]
-        keys.insert(0, 'id')
-        save_csv(dicts, path, keys=keys)
-
-    @classmethod
-    def identify(cls, tagged_sentence, sentence, issue):
+    def identify(self, tagged_sentence):
         return flatten(
-            [
-                cls._parse(parser, tagged_sentence, sentence, issue)
-                for parser in cls.parsers
-            ]
+            [self._parse(cp, tagged_sentence) for cp in self.chunk_parsers]
         )
 
-    @classmethod
-    def _parse(cls, parser, tagged_sentence, sentence, issue):
-        args, parser, aggregator = (
-            parser.get('args', {}),
-            parser['parser'],
-            parser['aggregator'],
+    def _parse(self, chunk_parser, tagged_sentence):
+        args, aggregator, chunk_parser = (
+            chunk_parser.get('args', {}),
+            chunk_parser['aggregator'],
+            chunk_parser['parser'],
         )
-        tree = parser.parse(tagged_sentence)
+        tree = chunk_parser.parse(tagged_sentence)
         interactions = list()
         for subtree in tree.subtrees():
-            if subtree.label() == cls.tag:
-                interactions.extend(
-                    getattr(cls, aggregator)(subtree, sentence, issue, **args)
-                )
+            if subtree.label() == self.tag:
+                interactions.extend(getattr(self, aggregator)(subtree, **args))
         return interactions
 
-    @classmethod
-    def markedsubtree2instances(cls, subtree, sentence, issue, inverse=False):
+    def markedsubtree2instances(self, subtree, inverse=False):
         """Converts a subtree with a marker into a list of instances.
 
         A marker is a specific tag that splits the sentence in to two, e.g.,
@@ -62,12 +43,17 @@ class Interaction:
         # keep only the entities B, C, etc.
         bs = subtree[1:]
         if inverse:
-            return [cls(b, a, sentence, issue) for b in bs]
+            return [
+                Interaction(b, a, self.sentence, self.issue, self.type)
+                for b in bs
+            ]
         else:
-            return [cls(a, b, sentence, issue) for b in bs]
+            return [
+                Interaction(a, b, self.sentence, self.issue, self.type)
+                for b in bs
+            ]
 
-    @classmethod
-    def inversedsubtree2instances(cls, subtree, sentence, issue):
+    def inversedsubtree2instances(self, subtree):
         """Converts a subtree whose marker is inversed.
 
         An inversed marker means that the subtree starts with the marker, as in
@@ -79,38 +65,23 @@ class Interaction:
         bs = subtree[:-1]
         # ...and the the last one is entity A.
         a = subtree[-1]
-        return [cls(b, a, sentence, issue) for b in bs]
+        return [
+            Interaction(b, a, self.sentence, self.issue, self.type) for b in bs
+        ]
 
-    @classmethod
-    def list2instances(cls, subtree, sentence, issue):
+    def list2instances(self, subtree):
         """Converts a subtree whose elements are in a list.
 
         This method is used to convert a list of parties and/or groupings that
         agree together, e.g., "A, B, and C"."""
         subtree = [token for token, tag in subtree if tag == 'ENT']
         return [
-            cls(a, b, sentence, issue) for a, b in combine(subtree, subtree)
+            Interaction(a, b, self.sentence, self.issue, self.type)
+            for a, b in combine(subtree, subtree)
         ]
 
-    def __str__(self):
-        return ' '.join(
-            [
-                f'{self.__class__.__name__}:',
-                self.entity_a,
-                self.entity_b,
-                f'on {self.date}:',
-                f'"{self.sentence}"',
-                f'(Issue {self.issue_id})',
-            ]
-        )
 
-    def __repr__(self):
-        return '-'.join(
-            [self.entity_a, self.__class__.__name__, self.entity_b]
-        )
-
-
-class OnBehalf(Interaction):
+class OnBehalfParser(InteractionParser):
 
     tag = 'OBH'
     markers = [
@@ -135,19 +106,18 @@ class OnBehalf(Interaction):
         ChunkRule(r'<ENT><OBH>(?:<ENT>+<CC><ENT>|<ENT>)', 'On behalf')
     ]
     #
-    parsers = [
+    chunk_parsers = [
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
             'aggregator': 'markedsubtree2instances',
         }
     ]
 
-    def __init__(self, entity_a, entity_b, sentence, issue):
-        super().__init__(entity_a, entity_b, sentence, issue)
-        self.type = self.__class__.__name__
+    def __init__(self, sentence, issue):
+        super().__init__(sentence, issue, 'on-behalf')
 
 
-class Support(Interaction):
+class SupportParser(InteractionParser):
 
     tag = 'SUP'
     markers = [
@@ -158,7 +128,7 @@ class Support(Interaction):
 
     # Match "A supported by B[, C, and D]" and similar.
     chunk_rules = [ChunkRule(r'<ENT><SUP><ENT>+(<CC><ENT>)?', 'Support')]
-    parsers = [
+    chunk_parsers = [
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
             'aggregator': 'markedsubtree2instances',
@@ -167,19 +137,18 @@ class Support(Interaction):
     ]
     # Match "Supported by B[,C, and D], A".
     chunk_rules = [ChunkRule(r'^<SUP><ENT>+(<CC><ENT>)?<ENT>', 'Support')]
-    parsers.append(
+    chunk_parsers.append(
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
             'aggregator': 'inversedsubtree2instances',
         }
     )
 
-    def __init__(self, entity_a, entity_b, sentence, issue):
-        super().__init__(entity_a, entity_b, sentence, issue)
-        self.type = self.__class__.__name__
+    def __init__(self, sentence, issue):
+        super().__init__(sentence, issue, 'support')
 
 
-class Opposition(Interaction):
+class OppositionParser(InteractionParser):
 
     tag = 'OPP'
     markers = [
@@ -190,7 +159,7 @@ class Opposition(Interaction):
 
     # Match "A opposed by B[, C, and D]" and similar.
     chunk_rules = [ChunkRule(r'<ENT><OPP><ENT>+(<CC><ENT>)?', 'Opposed')]
-    parsers = [
+    chunk_parsers = [
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
             'aggregator': 'markedsubtree2instances',
@@ -199,32 +168,30 @@ class Opposition(Interaction):
     ]
     # Match "Opposed by B[,C, and D], A".
     chunk_rules = [ChunkRule(r'^<OPP><ENT>+(<CC><ENT>)?<ENT>', 'Opposed')]
-    parsers.append(
+    chunk_parsers.append(
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
             'aggregator': 'inversedsubtree2instances',
         }
     )
 
-    def __init__(self, entity_a, entity_b, sentence, issue):
-        super().__init__(entity_a, entity_b, sentence, issue)
-        self.type = self.__class__.__name__
+    def __init__(self, sentence, issue):
+        super().__init__(sentence, issue, 'opposition')
 
 
-class Agreement(Interaction):
+class AgreementParser(InteractionParser):
 
     tag = 'AGR'
     markers = list()  # No markers for agreements.
 
     # Match a list of entities.
     chunk_rules = [ChunkRule(r'<ENT>+<CC><ENT>', 'Aggreement')]
-    parsers = [
+    chunk_parsers = [
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
             'aggregator': 'list2instances',
         }
     ]
 
-    def __init__(self, entity_a, entity_b, sentence, issue):
-        super().__init__(entity_a, entity_b, sentence, issue)
-        self.type = self.__class__.__name__
+    def __init__(self, sentence, issue):
+        super().__init__(sentence, issue, 'agreement')

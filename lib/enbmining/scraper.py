@@ -2,16 +2,17 @@ import re
 
 from bs4 import BeautifulSoup
 
-from .interactions import Agreement, OnBehalf, Opposition, Support
+from .interaction_parsers import (AgreementParser, OnBehalfParser,
+                                  OppositionParser, SupportParser)
 from .interventions import Intervention
 from .nlp import POSTagger, SentenceTokenizer, WordTokenizer
 from .utils import flatten
 
-INTERACTIONS = [
-    OnBehalf,
-    Support,
-    Opposition,
-    Agreement,
+PARSERS = [
+    OnBehalfParser,
+    SupportParser,
+    OppositionParser,
+    AgreementParser,
 ]
 
 
@@ -89,8 +90,7 @@ class InteractionScraper(Scraper):
         """Extracts a list of interactions from a sentence."""
         tagged = self.pos_tagger.tag(sentence)
         interactions = list()
-        for interaction in INTERACTIONS:
-            interactions.extend(
-                interaction.identify(tagged, sentence, self.issue)
-            )
+        for parser in PARSERS:
+            parser = parser(sentence, self.issue)
+            interactions.extend(parser.identify(tagged))
         return interactions
