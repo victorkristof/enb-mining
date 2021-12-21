@@ -3,7 +3,7 @@ from itertools import chain
 
 import nltk
 
-from .interactions import OnBehalf, Opposition, Support
+from .interactions import Agreement, OnBehalf, Opposition, Support
 
 ABBREV = set(
     [
@@ -26,12 +26,9 @@ INTERACTIONS = [
     OnBehalf,
     Support,
     Opposition,
-    # ('spoke', 'with'),
-    # ('spoke', 'with', 'the'),
+    Agreement,
     # ('concerns', 'of'),
     # ('concerns', 'of', 'the'),
-    # ('proposed', 'by'),
-    # ('proposed', 'by', 'the'),
 ]
 
 

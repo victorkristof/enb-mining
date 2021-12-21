@@ -1,5 +1,4 @@
 import csv
-import itertools
 from itertools import chain
 from pathlib import Path
 
@@ -47,8 +46,8 @@ def print_progress(index, array, every_n=None):
 
 
 def combine(array1, array2):
-    """Generates all pairs of elements in two arrays."""
-    return list(itertools.product(array1, array2))
+    """Generates all dyads from two arrays, without self-loops."""
+    return [(a, b) for a in array1 for b in array2 if a != b]
 
 
 def flatten(iterable):

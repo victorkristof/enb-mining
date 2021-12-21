@@ -1,6 +1,6 @@
 from nltk.chunk.regexp import ChunkRule, RegexpChunkParser
 
-from .utils import flatten, save_csv
+from .utils import combine, flatten, save_csv
 
 
 class Interaction:
@@ -50,7 +50,7 @@ class Interaction:
     def markedsubtree2instances(cls, subtree, sentence, issue, inverse=False):
         """Converts a subtree with a marker into a list of instances.
 
-        A marker is a specific tag that splits the sentence in to to, e.g.,
+        A marker is a specific tag that splits the sentence in to two, e.g.,
         "A on behalf of B". The marker is "on behalf of" as it splits the
         sentence into two parts. Depending on the interaction, the order of
         A and B might be `inversed` (e.g, "A for B" and "B supported by A")"""
@@ -80,6 +80,17 @@ class Interaction:
         # ...and the the last one is entity A.
         a = subtree[-1]
         return [cls(b, a, sentence, issue) for b in bs]
+
+    @classmethod
+    def list2instances(cls, subtree, sentence, issue):
+        """Converts a subtree whose elements are in a list.
+
+        This method is used to convert a list of parties and/or groupings that
+        agree together, e.g., "A, B, and C"."""
+        subtree = [token for token, tag in subtree if tag == 'ENT']
+        return [
+            cls(a, b, sentence, issue) for a, b in combine(subtree, subtree)
+        ]
 
     def __str__(self):
         return ' '.join(
@@ -194,6 +205,25 @@ class Opposition(Interaction):
             'aggregator': 'inversedsubtree2instances',
         }
     )
+
+    def __init__(self, entity_a, entity_b, sentence, issue):
+        super().__init__(entity_a, entity_b, sentence, issue)
+        self.type = self.__class__.__name__
+
+
+class Agreement(Interaction):
+
+    tag = 'AGR'
+    markers = list()  # No markers for agreements.
+
+    # Match a list of entities.
+    chunk_rules = [ChunkRule(r'<ENT>+<CC><ENT>', 'Aggreement')]
+    parsers = [
+        {
+            'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
+            'aggregator': 'list2instances',
+        }
+    ]
 
     def __init__(self, entity_a, entity_b, sentence, issue):
         super().__init__(entity_a, entity_b, sentence, issue)
