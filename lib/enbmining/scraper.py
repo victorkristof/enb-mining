@@ -2,9 +2,9 @@ import re
 
 from bs4 import BeautifulSoup
 
+from .data import Intervention
 from .interaction_parsers import (AgreementParser, OnBehalfParser,
                                   OppositionParser, SupportParser)
-from .interventions import Intervention
 from .nlp import POSTagger, SentenceTokenizer, WordTokenizer
 from .utils import flatten
 
