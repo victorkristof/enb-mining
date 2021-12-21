@@ -27,8 +27,6 @@ INTERACTIONS = [
     Support,
     Opposition,
     Agreement,
-    # ('concerns', 'of'),
-    # ('concerns', 'of', 'the'),
 ]
 
 

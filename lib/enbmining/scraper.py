@@ -2,8 +2,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from .interactions import OnBehalf  # Criticism,
-from .interactions import Agreement, Opposition, Support
+from .interactions import Agreement, OnBehalf, Opposition, Support
 from .interventions import Intervention
 from .nlp import POSTagger, SentenceTokenizer, WordTokenizer
 from .utils import flatten
@@ -13,7 +12,6 @@ INTERACTIONS = [
     Support,
     Opposition,
     Agreement,
-    # Criticism,
 ]
 
 
