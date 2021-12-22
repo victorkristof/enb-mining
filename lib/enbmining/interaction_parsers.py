@@ -1,4 +1,5 @@
 from nltk.chunk.regexp import ChunkRule, RegexpChunkParser
+from nltk.tree import Tree
 
 from .data import Interaction
 from .utils import combine, flatten
@@ -21,6 +22,9 @@ class InteractionParser:
             chunk_parser['aggregator'],
             chunk_parser['parser'],
         )
+        # Collapse the 'on-behalf' interactions if it's not one.
+        if self.type != 'on-behalf':
+            tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
         tree = chunk_parser.parse(tagged_sentence)
         interactions = list()
         for subtree in tree.subtrees():
@@ -100,9 +104,7 @@ class OnBehalfParser(InteractionParser):
     ]
 
     # Match "A on behalf of B[, C, and D]" and similar.
-    # chunk_rules = [ChunkRule(r'<ENT><OBH><ENT>+(<CC><ENT>)?', 'On behalf')]
     chunk_rules = [
-        # ChunkRule(r'<ENT><OBH>(?:<ENT>|<ENT><CC><ENT>)', 'On behalf')
         ChunkRule(r'<ENT><OBH>(?:<ENT>+<CC><ENT>|<ENT>)', 'On behalf')
     ]
     #
@@ -115,6 +117,31 @@ class OnBehalfParser(InteractionParser):
 
     def __init__(self, sentence, issue):
         super().__init__(sentence, issue, 'on-behalf')
+
+    @classmethod
+    def collapse(cls, tagged_sentence):
+        # There's only one parser for on-behalf interactions.
+        chunk_parser = cls.chunk_parsers[0]['parser']
+        tree = chunk_parser.parse(tagged_sentence)
+        tagged_sentence = list()
+        for node in tree:
+            # The subtrees (chunks) are the "OBH" tag; we collapse
+            if type(node) == Tree:
+                tagged_sentence.extend(cls._collapse(node))
+            # The others are kept as is.
+            elif type(node) == tuple:
+                tagged_sentence.append(node)
+            else:
+                print('Error with node', type(node), node)
+        return tagged_sentence
+
+    @staticmethod
+    def _collapse(subtree):
+        subtree = [(tok, tag) for tok, tag in subtree if tag == 'ENT']
+        # The first node is the entity A and the OBH tag has been
+        # pruned from the line above, so we keep only the "right-side"
+        # of the interaction.
+        return subtree[1:]
 
 
 class SupportParser(InteractionParser):
