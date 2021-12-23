@@ -7,15 +7,13 @@ INTERACTION_TYPES = set(['on-behalf', 'agreement', 'support', 'opposition'])
 
 class Data(ABC):
     @classmethod
-    def to_csv(cls, interventions, path):
-        # Create dicts of interventions.
-        dicts = [
-            {k: getattr(intv, k) for k in cls._keys} for intv in interventions
-        ]
+    def to_csv(cls, data, path):
+        # Create dicts of datum.
+        dicts = [{k: getattr(datum, k) for k in cls._keys} for datum in data]
         # Add ID.
         dicts = [d | {'id': i + 1} for i, d in enumerate(dicts)]
-        cls._keys.insert(0, 'id')
-        save_csv(dicts, path, keys=cls._keys)
+        keys = ['id'] + cls._keys
+        save_csv(dicts, path, keys=keys)
 
 
 class Intervention(Data):
