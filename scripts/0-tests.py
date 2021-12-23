@@ -60,6 +60,7 @@ for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
 
 # Test with a complex sentence.
+scraper = InteractionScraper(html, issue, entities)
 complex_sentence = '''Supported by Lesotho, for the LDCs, Spain, for the EU,\
  PANAMA, SOUTH AFRICA, AUSTRALIA, COLOMBIA, MALAWI, the PHILIPPINES and NORWAY\
 , AOSIS proposed'''
@@ -68,6 +69,7 @@ for interaction in interactions:
     if interaction.type != 'agreement':
         print(interaction.__repr__())
 
+scraper = InteractionScraper(html, issue, entities)
 complex_sentence = '''Switzerland, for the EIG, NORWAY, for Australia, New\
  Zealand, the US, Canada and Japan, the EU and MARSHALL ISLANDS, opposed by\
  CHINA, proposed that'''
@@ -76,6 +78,7 @@ for interaction in interactions:
     if interaction.type != 'agreement':
         print(interaction.__repr__())
 
+scraper = InteractionScraper(html, issue, entities)
 complex_sentence = '''CUBA, for Algeria, Argentina, Brazil, China, Ecuador,\
  Egypt, Malaysia, Nicaragua, the Philippines, Saudi Arabia, Venezuela,\
  Thailand Pakistan, Uruguay, Sierra Leone, Paraguay, India and Bolivia,\
@@ -84,3 +87,14 @@ interactions = scraper._scrape_from_sentence(complex_sentence)
 for interaction in interactions:
     if interaction.type != 'agreement':
         print(interaction.__repr__())
+
+scraper = InteractionScraper(html, issue, entities)
+complex_sentence = '''Guatemala for AILAC, Mexico for the Environmental\
+ Integrity Group, the EU, the Philippines, Bangladesh, the Dominican Republic,\
+ Viet Nam, Venezuela, and Sudan for the African Group, stressed including\
+ gender equality, with some parties variously calling for reference to human\
+ rights, intergenerational equity, and the rights of indigenous peoples.'''
+interactions = scraper._scrape_from_sentence(complex_sentence)
+for interaction in interactions:
+    # if interaction.type != 'agreement':
+    print(repr(interaction))
