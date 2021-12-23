@@ -1,4 +1,3 @@
-import string
 from itertools import chain
 
 import nltk
@@ -61,9 +60,7 @@ class WordTokenizer:
         self.tokenizer = nltk.tokenize.MWETokenizer(list(mwes), separator=' ')
 
     def tokenize(self, text):
-        tokens = self.tokenizer.tokenize(nltk.word_tokenize(text))
-        # Remove punctuation from sentences.
-        return list(filter(lambda tk: tk not in string.punctuation, tokens))
+        return self.tokenizer.tokenize(nltk.word_tokenize(text))
 
 
 class InteractionTokenizer:
