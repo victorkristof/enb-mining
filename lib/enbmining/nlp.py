@@ -82,23 +82,17 @@ class POSTagger:
 
     @staticmethod
     def _init_model(entities):
-        model = dict()
-        for entity in entities:
-            model[entity] = 'ENT'
-        for parser in PARSERS:
-            for marker in parser.markers:
-                model[marker] = parser.tag
+        model = {entity: 'ENT' for entity in entities}
+        model |= {
+            marker: parser.tag
+            for parser in PARSERS
+            for marker in parser.markers
+        }
         return model
 
     def _retag_with_model(self, tagged):
-        new_tagged = list()
-        for tok, tag in tagged:
-            new_tag = self._tag_model.get(tok)
-            if new_tag is None:
-                new_tagged.append((tok, tag))
-            else:
-                new_tagged.append((tok, new_tag))
-        return new_tagged
+        # Assign new tags when they exist, otherwise default to current tag.
+        return [(tok, self._tag_model.get(tok, tag)) for tok, tag in tagged]
 
     def tag(self, sentence):
         tagged = nltk.pos_tag(self.tokenizer.tokenize(sentence))
