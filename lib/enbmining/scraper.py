@@ -1,6 +1,6 @@
 import re
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 from .data import Intervention
 from .interaction_parsers import (AgreementParser, OnBehalfParser,
@@ -31,7 +31,7 @@ class Scraper:
         content = self.soup.find(
             'section', class_='o-content-from-editor--report'
         )
-        paragraphs = content.find_all('p')
+        paragraphs = self._get_paragraphs(content)
         tokenizer = SentenceTokenizer()
         sentences = list()
         for paragraph in paragraphs:
@@ -49,6 +49,32 @@ class Scraper:
         ]
         # Flatten this nested list.
         return flatten(scraped)
+
+    @staticmethod
+    def _get_paragraphs(content):
+        """Filters only the paragraphs that are relevant.
+
+        In particular, it removes analysis and opinion sections."""
+
+        def is_opinion_paragraph(node):
+            text = node.get_text()
+            opinions = [
+                'BRIEF ANALYSIS OF',
+                'THINGS TO LOOK FOR',
+                'IN THE CORRIDORS',
+            ]
+            return any([opinion in text for opinion in opinions])
+
+        paragraphs = list()
+        for node in content.children:
+            if type(node) == Tag:
+                # We stop as soon as we see an opinion paragraph.
+                if is_opinion_paragraph(node):
+                    return paragraphs
+                # Keep only <p> tags.
+                elif node.name == 'p':
+                    paragraphs.append(node)
+        return paragraphs
 
     def _clean(self, text):
         # Remove exclamation marks from names (for sentence tokenizer).
