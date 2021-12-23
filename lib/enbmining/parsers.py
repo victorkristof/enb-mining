@@ -1,14 +1,48 @@
+from abc import ABC, abstractmethod
+
 from nltk.chunk.regexp import ChunkRule, RegexpChunkParser
 from nltk.tree import Tree
 
-from .data import Interaction
+from .data import Interaction, Intervention
 from .utils import combine, flatten
 
 
-class InteractionParser:
-    def __init__(self, sentence, issue, interaction_type):
+class Parser(ABC):
+    def __init__(self, sentence, issue):
         self.sentence = sentence
         self.issue = issue
+
+    @abstractmethod
+    def parse(self, tagged_sentence):
+        ...
+
+
+class InterventionParser(Parser):
+    def parse(self, tagged_sentence):
+        # Remove patterns "(Country)", corresponding to people from a country
+        # being mentionned in the bulletin.
+        tagged_sentence = self._remove_in_parenthesis(tagged_sentence)
+        # Collapse the 'on-behalf' interactions.
+        tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
+        return self._to_interventions(
+            set([token for token, tag in tagged_sentence if tag == 'ENT'])
+        )
+
+    @staticmethod
+    def _remove_in_parenthesis(tagged_sentence):
+        parenthesis_chunker = InParenthesis()
+        return parenthesis_chunker.chunk(tagged_sentence)
+
+    def _to_interventions(self, entities):
+        return [
+            Intervention(entity, self.sentence, self.issue)
+            for entity in entities
+        ]
+
+
+class InteractionParser(Parser):
+    def __init__(self, sentence, issue, interaction_type):
+        super().__init__(sentence, issue)
         self.type = interaction_type
 
     def parse(self, tagged_sentence):
@@ -118,6 +152,29 @@ class InteractionParser:
         ]
 
 
+class InParenthesis:
+    def __init__(self):
+        self.tag = 'PAR'
+        chunk_rules = [ChunkRule(r'<\(><ENT><\)>', 'In parenthesis')]
+        self.chunk_parser = RegexpChunkParser(
+            chunk_rules, chunk_label=self.tag
+        )
+
+    def chunk(self, tagged_sentence):
+        tree = self.chunk_parser.parse(tagged_sentence)
+        tagged_sentence = list()
+        for node in tree:
+            # The subtree is a "PAR" chunk; we transform them into tagged list.
+            if type(node) == Tree:
+                tagged_sentence.append((node[:], 'PAR'))
+            # The others are kept as is.
+            elif type(node) == tuple:
+                tagged_sentence.append(node)
+            else:
+                print('Error with node', type(node), node)
+        return tagged_sentence
+
+
 class OnBehalfParser(InteractionParser):
 
     tag = 'OBH'
@@ -140,7 +197,6 @@ class OnBehalfParser(InteractionParser):
     # delimiter for the list of entities being represented, as well as "A for
     # B", this time without comma but only for one entity being represented.
     cr = r'<ENT><,><OBH>((<ENT><,>)*<ENT><CC><ENT>|<ENT><,>)|<ENT><OBH><ENT>'
-    # ChunkRule(r'<ENT><OBH>(?:<ENT>+<CC><ENT>|<ENT>)', 'On behalf')
     chunk_rules = [ChunkRule(cr, 'On behalf')]
 
     chunk_parsers = [

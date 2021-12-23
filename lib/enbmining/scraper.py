@@ -2,13 +2,12 @@ import re
 
 from bs4 import BeautifulSoup, Tag
 
-from .data import Intervention
-from .interaction_parsers import (AgreementParser, OnBehalfParser,
-                                  OppositionParser, SupportParser)
-from .nlp import POSTagger, SentenceTokenizer, WordTokenizer
+from .nlp import POSTagger, SentenceTokenizer
+from .parsers import (AgreementParser, InterventionParser, OnBehalfParser,
+                      OppositionParser, SupportParser)
 from .utils import flatten
 
-PARSERS = [
+INTERACTION_PARSERS = [
     OnBehalfParser,
     SupportParser,
     OppositionParser,
@@ -26,6 +25,7 @@ class Scraper:
         self.soup = BeautifulSoup(html, 'lxml')
         self.issue = issue
         self.entities = set(entities)
+        self.pos_tagger = POSTagger(entities)
 
     def extract_sentences(self):
         content = self.soup.find(
@@ -96,27 +96,23 @@ class Scraper:
 class InterventionScraper(Scraper):
     def __init__(self, html, issue, entities):
         super().__init__(html, issue, entities)
-        self.word_tokenizer = WordTokenizer(entities)
 
     def _scrape_from_sentence(self, sentence):
         """Extracts a list of interventions from a sentence."""
-        tokens = set(self.word_tokenizer.tokenize(sentence))
-        matches = tokens.intersection(self.entities)
-        return [
-            Intervention(entity, sentence, self.issue) for entity in matches
-        ]
+        tagged = self.pos_tagger.tag(sentence)
+        parser = InterventionParser(sentence, self.issue)
+        return parser.parse(tagged)
 
 
 class InteractionScraper(Scraper):
     def __init__(self, html, issue, entities):
         super().__init__(html, issue, entities)
-        self.pos_tagger = POSTagger(entities)
 
     def _scrape_from_sentence(self, sentence):
         """Extracts a list of interactions from a sentence."""
         tagged = self.pos_tagger.tag(sentence)
         interactions = list()
-        for parser in PARSERS:
+        for parser in INTERACTION_PARSERS:
             parser = parser(sentence, self.issue)
             interactions.extend(parser.parse(tagged))
         return interactions
