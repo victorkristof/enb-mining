@@ -11,7 +11,7 @@ class InteractionParser:
         self.issue = issue
         self.type = interaction_type
 
-    def identify(self, tagged_sentence):
+    def parse(self, tagged_sentence):
         return flatten(
             [self._parse(cp, tagged_sentence) for cp in self.chunk_parsers]
         )

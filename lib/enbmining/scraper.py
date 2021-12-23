@@ -92,5 +92,5 @@ class InteractionScraper(Scraper):
         interactions = list()
         for parser in PARSERS:
             parser = parser(sentence, self.issue)
-            interactions.extend(parser.identify(tagged))
+            interactions.extend(parser.parse(tagged))
         return interactions
