@@ -11,16 +11,13 @@ def main(html_folder, issues_path, entities_path, output_path):
     # Extract interventions.
     print('Extracting interventions...')
     interventions = list()
-    num_issues = 0
     for i, issue in enumerate(issues):
-        if issue['type'] == 'summary':
-            continue
         html = load_html(html_folder, issue['id'])
         scraper = InterventionScraper(html, issue, entities)
         interventions.extend(scraper.scrape())
-        num_issues += 1
         print_progress(i, issues, every_n=10)
-    print(f'Extracted {len(interventions)} from {num_issues} issues')
+    total = len(interventions)
+    print(f'Extracted {total} interventions from {len(issues)} issues')
 
     # Save interventions.
     Intervention.to_csv(interventions, output_path)
