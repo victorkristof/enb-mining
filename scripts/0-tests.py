@@ -1,18 +1,21 @@
 from enbmining import InteractionScraper, InterventionScraper
-from enbmining.utils import Entity, load_csv, load_html
+from enbmining.entities import Grouping, Party
+from enbmining.utils import load_csv, load_html
 
-entities_path = 'data/entities_interactions.txt'
+parties_path = 'data/parties.txt'
+groupings_path = 'data/groupings.txt'
 issues_path = 'data/issues.csv'
 html_folder = 'data/html'
 
-entities = Entity.load_entities(entities_path)
+parties = Party.load(parties_path)
+groupings = Grouping.load(groupings_path)
 issues = load_csv(issues_path)
 
 issue = issues[0]
 html = load_html(html_folder, issue['id'])
 
 # Test "on behalf".
-scraper = InteractionScraper(html, issue, entities)
+scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
     'Switzerland, for the EIG, proposed X.',
     'Switzerland for the EIG proposed X.',
@@ -24,7 +27,7 @@ for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
 
 # Test "agreement"
-scraper = InteractionScraper(html, issue, entities)
+scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
     'JAMAICA and TUVALU asked for',
     'JAMAICA, TUVALU, and SWITZERLAND asked for',
@@ -38,7 +41,7 @@ for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
 
 # Test "supported by".
-scraper = InteractionScraper(html, issue, entities)
+scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
     'CHINA, supported by EGYPT',
     'CHINA, for the G77, supported by NIGERIA',
@@ -50,7 +53,7 @@ for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
 
 # Test "opposed by".
-scraper = InteractionScraper(html, issue, entities)
+scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
     'JAMAICA, opposed by the EU, asked for',
     'TUVALU and JAMAICA, opposed by the EU, CANADA and AUSTRALIA, said that',
@@ -60,16 +63,16 @@ for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
 
 # Test with a complex sentence.
-scraper = InteractionScraper(html, issue, entities)
+scraper = InteractionScraper(html, issue, parties, groupings)
 complex_sentence = '''Supported by Lesotho, for the LDCs, Spain, for the EU,\
  PANAMA, SOUTH AFRICA, AUSTRALIA, COLOMBIA, MALAWI, the PHILIPPINES and NORWAY\
-, AOSIS proposed'''
+ , AOSIS proposed'''
 interactions = scraper._scrape_from_sentence(complex_sentence)
 for interaction in interactions:
     if interaction.type != 'agreement':
         print(interaction.__repr__())
 
-scraper = InteractionScraper(html, issue, entities)
+scraper = InteractionScraper(html, issue, parties, groupings)
 complex_sentence = '''Switzerland, for the EIG, NORWAY, for Australia, New\
  Zealand, the US, Canada and Japan, the EU and MARSHALL ISLANDS, opposed by\
  CHINA, proposed that'''
@@ -78,37 +81,31 @@ for interaction in interactions:
     if interaction.type != 'agreement':
         print(interaction.__repr__())
 
-scraper = InteractionScraper(html, issue, entities)
+scraper = InteractionScraper(html, issue, parties, groupings)
 complex_sentence = '''CUBA, for Algeria, Argentina, Brazil, China, Ecuador,\
  Egypt, Malaysia, Nicaragua, the Philippines, Saudi Arabia, Venezuela,\
- Thailand Pakistan, Uruguay, Sierra Leone, Paraguay, India and Bolivia,\
+ Thailand, Pakistan, Uruguay, Sierra Leone, Paraguay, India and Bolivia,\
  supported by CHINA, outlined elements that'''
 interactions = scraper._scrape_from_sentence(complex_sentence)
 for interaction in interactions:
     if interaction.type != 'agreement':
         print(interaction.__repr__())
 
-scraper = InteractionScraper(html, issue, entities)
+scraper = InteractionScraper(html, issue, parties, groupings)
 complex_sentence = '''Guatemala for AILAC, Mexico for the Environmental\
  Integrity Group, the EU, the Philippines, Bangladesh, the Dominican Republic,\
- Viet Nam, Venezuela, and Sudan for the African Group, stressed including\
- gender equality, with some parties variously calling for reference to human\
- rights, intergenerational equity, and the rights of indigenous peoples.'''
+ Viet Nam, Venezuela, and Sudan for the African Group, stressed '''
 interactions = scraper._scrape_from_sentence(complex_sentence)
 for interaction in interactions:
-    # if interaction.type != 'agreement':
-    print(repr(interaction))
+    if interaction.type != 'agreement':
+        print(repr(interaction))
 
-for ent in entities:
-    if 'BASIC' in ent.name:
-        print(ent)
-
-scraper = InterventionScraper(html, issue, entities)
+scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = '''26th BASIC Ministerial Meeting: BASIC (Brazil, South Africa,\
  India, and China) countries convened in Durban, South Africa, from 19-20 May\
  2018.'''
 scraper._scrape_from_sentence(sentence)
 
-scraper = InterventionScraper(html, issue, entities)
+scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = 'Senegal, for the African Group, agreed, noting that'
 scraper._scrape_from_sentence(sentence)

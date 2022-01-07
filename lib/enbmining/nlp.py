@@ -49,8 +49,8 @@ class SentenceTokenizer:
 
 class WordTokenizer:
 
-    """A word tokenizer that accounts for multi-word entities (countries,
-    agencies, party groupings, etc., such as 'United Kingdom')."""
+    """A word tokenizer that accounts for multi-word expressions (countries,
+    agencies, party groupings, etc.), such as 'United Kingdom'."""
 
     def __init__(self, entities):
         """Initializes a tokenizer from a set of entities."""
@@ -73,27 +73,30 @@ class InteractionTokenizer:
 
     """A tokenizer that combines entities and markers of interactions."""
 
-    def __init__(self, entities):
+    def __init__(self, parties, groupings):
         markers = [mk for parser in PARSERS for mk in parser.markers]
-        self.tokenizer = WordTokenizer(list(chain(entities, markers)))
+        self.tokenizer = WordTokenizer(
+            list(chain(parties, groupings, markers))
+        )
 
     def tokenize(self, text):
         return self.tokenizer.tokenize(text)
 
 
 class POSTagger:
-    def __init__(self, entities):
-        self.tokenizer = InteractionTokenizer(entities)
-        self._tag_model = self._init_model(entities)
+    def __init__(self, parties, groupings):
+        self.tokenizer = InteractionTokenizer(parties, groupings)
+        self._tag_model = self._init_model(parties, groupings)
 
     @staticmethod
-    def _init_model(entities):
+    def _init_model(parties, groupings):
         def encode_token(token):
             return '_'.join(nltk.word_tokenize(token))
 
         # Create tagging model compatible with the multi-word expression
         # tokenizer in WordTokenizer.
-        model = {encode_token(entity): 'ENT' for entity in entities}
+        model = {encode_token(party): 'PAR' for party in parties}
+        model |= {encode_token(group): 'GRP' for group in groupings}
         model |= {
             encode_token(marker): parser.tag
             for parser in PARSERS

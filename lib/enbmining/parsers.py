@@ -6,6 +6,8 @@ from nltk.tree import Tree
 from .data import Interaction, Intervention
 from .utils import combine, flatten
 
+ENTITY = set(['PAR', 'GRP'])
+
 
 class Parser(ABC):
     def __init__(self, sentence, issue):
@@ -25,7 +27,7 @@ class InterventionParser(Parser):
         # Collapse the 'on-behalf' interactions.
         tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
         return self._to_interventions(
-            set([token for token, tag in tagged_sentence if tag == 'ENT'])
+            set([token for token, tag in tagged_sentence if tag in ENTITY])
         )
 
     @staticmethod
@@ -80,7 +82,7 @@ class InteractionParser(Parser):
 
     @staticmethod
     def _unroll_agreement(subtree):
-        """Unrolls <AGR> tokens into a list of entities <ENT>."""
+        """Unrolls <AGR> tokens into a list of parties and groupings."""
 
         new_subtree = list()
         for token, tag in subtree:
@@ -101,7 +103,7 @@ class InteractionParser(Parser):
         # Unroll agreement tags into list of entities.
         subtree = self._unroll_agreement(subtree)
         # Keep only the entity tags and the parser's tag.
-        keep = set(['ENT', self.tag])
+        keep = set(['PAR', 'GRP', self.tag])
         subtree = [(token, tag) for token, tag in subtree if tag in keep]
         # Find index of parser's tag that we will use as "pivot".
         index = self.index_of(self.tag, subtree)
@@ -131,7 +133,7 @@ class InteractionParser(Parser):
 
         # Unroll agreement tags into list of entities.
         subtree = self._unroll_agreement(subtree)
-        subtree = [token for token, tag in subtree if tag == 'ENT']
+        subtree = [token for token, tag in subtree if tag in ENTITY]
         # We know the first nodes are B, C, ...
         bs = subtree[:-1]
         # ...and the the last one is entity A.
@@ -145,7 +147,7 @@ class InteractionParser(Parser):
 
         This method is used to convert a list of parties and/or groupings that
         agree together, e.g., "A, B, and C"."""
-        subtree = [token for token, tag in subtree if tag == 'ENT']
+        subtree = [token for token, tag in subtree if tag in ENTITY]
         return [
             Interaction(a, b, self.sentence, self.issue, self.type)
             for a, b in combine(subtree, subtree)
@@ -154,8 +156,8 @@ class InteractionParser(Parser):
 
 class InParenthesis:
     def __init__(self):
-        self.tag = 'PAR'
-        chunk_rules = [ChunkRule(r'<\(><ENT><\)>', 'In parenthesis')]
+        self.tag = 'PTH'
+        chunk_rules = [ChunkRule(r'<\(><PAR|GRP><\)>', 'In parenthesis')]
         self.chunk_parser = RegexpChunkParser(
             chunk_rules, chunk_label=self.tag
         )
@@ -164,9 +166,9 @@ class InParenthesis:
         tree = self.chunk_parser.parse(tagged_sentence)
         tagged_sentence = list()
         for node in tree:
-            # The subtree is a "PAR" chunk; we transform them into tagged list.
+            # The subtree is a "PTH" chunk; we transform them into tagged list.
             if type(node) == Tree:
-                tagged_sentence.append((node[:], 'PAR'))
+                tagged_sentence.append((node[:], 'PTH'))
             # The others are kept as is.
             elif type(node) == tuple:
                 tagged_sentence.append(node)
@@ -192,7 +194,11 @@ class OnBehalfParser(InteractionParser):
     # Match "A, on behalf of B[, C and D],", using the first and last comma as
     # delimiter for the list of entities being represented, as well as "A for
     # B", this time without comma but only for one entity being represented.
-    cr = r'<ENT><,><OBH>((<ENT><,>)*<ENT><CC><ENT>|<ENT><,>)|<ENT><OBH><ENT>'
+    cr = r'<PAR|GRP><,><OBH>((<PAR|GRP><,>)*<PAR|GRP><CC><PAR|GRP>|<PAR|GRP><,>)|<PAR|GRP><OBH><PAR|GRP>'
+    # cr = r'<PAR><,><OBH><GRP><,>|'
+    # cr += r'<PAR><OBH><GRP>'
+    # cr += r'<PAR><,><OBH>((<PAR><,>)*<PAR><CC><PAR>|<PAR><,>)|'
+    # cr += r'<ENT><OBH><ENT>'
     chunk_rules = [ChunkRule(cr, 'On behalf')]
 
     chunk_parsers = [
@@ -242,7 +248,7 @@ class SupportParser(InteractionParser):
 
     # Match "A supported by B[, C, and D]" and similar.
     chunk_rules = [
-        ChunkRule(r'(<ENT>|<AGR>)<,>?<SUP>(<ENT>|<AGR>)', 'Support')
+        ChunkRule(r'(<PAR|GRP>|<AGR>)<,>?<SUP>(<PAR|GRP>|<AGR>)', 'Support')
     ]
     chunk_parsers = [
         {
@@ -252,7 +258,9 @@ class SupportParser(InteractionParser):
         }
     ]
     # Match "Supported by B[,C, and D], A".
-    chunk_rules = [ChunkRule(r'^<SUP>(<AGR>|<ENT><,>)<ENT>', 'Support')]
+    chunk_rules = [
+        ChunkRule(r'^<SUP>(<AGR>|<PAR|GRP><,>)<PAR|GRP>', 'Support')
+    ]
     chunk_parsers.append(
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
@@ -274,7 +282,7 @@ class OppositionParser(InteractionParser):
 
     # Match "A opposed by B[, C, and D]" and similar.
     chunk_rules = [
-        ChunkRule(r'(<ENT>|<AGR>)<,>?<OPP>(<ENT>|<AGR>)', 'Opposition')
+        ChunkRule(r'(<PAR|GRP>|<AGR>)<,>?<OPP>(<PAR|GRP>|<AGR>)', 'Opposition')
     ]
     chunk_parsers = [
         {
@@ -284,7 +292,9 @@ class OppositionParser(InteractionParser):
         }
     ]
     # Match "Opposed by B[,C, and D], A".
-    chunk_rules = [ChunkRule(r'^<OPP>(<AGR>|<ENT><,>)<ENT>', 'Opposition')]
+    chunk_rules = [
+        ChunkRule(r'^<OPP>(<AGR>|<PAR|GRP><,>)<PAR|GRP>', 'Opposition')
+    ]
     chunk_parsers.append(
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
@@ -304,7 +314,9 @@ class AgreementParser(InteractionParser):
     # Match a list of entities, where multiple "and"'s can appear in the list,
     # but it will necessarily by terminated by "and ENTITY".
     chunk_rules = [
-        ChunkRule(r'((<ENT><,>)*<ENT><,>?<CC><ENT><,>?)+', 'Aggreement')
+        ChunkRule(
+            r'((<PAR|GRP><,>)*<PAR|GRP><,>?<CC><PAR|GRP><,>?)+', 'Aggreement'
+        )
     ]
     chunk_parsers = [
         {
@@ -318,12 +330,12 @@ class AgreementParser(InteractionParser):
 
     @classmethod
     def collapse(cls, tagged_sentence):
-        # There's only one parser for on-behalf interactions.
+        # There's only one parser for agreement interactions.
         chunk_parser = cls.chunk_parsers[0]['parser']
         tree = chunk_parser.parse(tagged_sentence)
         tagged_sentence = list()
         for node in tree:
-            # The subtrees (chunks) are the "OBH" tag; we collapse them.
+            # The subtrees (chunks) are the "AGR" tag; we collapse them.
             if type(node) == Tree:
                 tagged_sentence.append(cls._collapse(node))
             # The others are kept as is.
@@ -336,7 +348,7 @@ class AgreementParser(InteractionParser):
     @staticmethod
     def _collapse(subtree):
         # Keep only the entities
-        entities = [(tk, tg) for tk, tg in subtree if tg == 'ENT']
+        entities = [(token, tag) for token, tag in subtree if tag in ENTITY]
         # Create new node whose tag is "AGR" and whose token is the list of
         # entities.
         return (entities, 'AGR')

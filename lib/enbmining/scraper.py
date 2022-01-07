@@ -19,14 +19,17 @@ class Scraper:
 
     """A general scraper for interventions and interactions."""
 
-    def __init__(self, html, issue, entities):
+    def __init__(self, html, issue, parties, groupings):
         """Initializes the scraper with some HTML, metadata about the ENB
-        issue,  and a set of Entities."""
+        issue, and a set of Entities."""
         self.soup = BeautifulSoup(html, 'lxml')
         self.issue = issue
-        self.entities = entities
-        entities = [entity.name for entity in entities]
-        self.pos_tagger = POSTagger(entities)
+        self.parties = parties
+        self.groupings = groupings
+        self.pos_tagger = POSTagger(
+            [party.name for party in parties],
+            [group.name for group in groupings],
+        )
 
     def scrape(self):
         # Scraped interventions/interactions (list of list).
@@ -96,8 +99,8 @@ class Scraper:
 
 
 class InterventionScraper(Scraper):
-    def __init__(self, html, issue, entities):
-        super().__init__(html, issue, entities)
+    def __init__(self, html, issue, parties, groupings):
+        super().__init__(html, issue, parties, groupings)
 
     def _scrape_from_sentence(self, sentence):
         """Extracts a list of interventions from a sentence."""
@@ -107,8 +110,8 @@ class InterventionScraper(Scraper):
 
 
 class InteractionScraper(Scraper):
-    def __init__(self, html, issue, entities):
-        super().__init__(html, issue, entities)
+    def __init__(self, html, issue, parties, groupings):
+        super().__init__(html, issue, parties, groupings)
 
     def _scrape_from_sentence(self, sentence):
         """Extracts a list of interactions from a sentence."""
