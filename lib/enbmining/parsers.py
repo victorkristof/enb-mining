@@ -181,16 +181,12 @@ class OnBehalfParser(InteractionParser):
     markers = [
         'also on behalf of',
         'on behalf of',
-        'on behalf of the',
         'speaking on behalf of',
-        'speaking on behalf of the',
         'speaking for',
-        'speaking for the',
         'also speaking for',
         'for',
-        'for the',
         'for several',
-        'for a number of members of the',
+        'for a number of members of',
     ]
 
     # Match "A, on behalf of B[, C and D],", using the first and last comma as
@@ -242,7 +238,6 @@ class SupportParser(InteractionParser):
         'supported by',
         'and supported by',
         'generally supported by',
-        'supported by the',
     ]
 
     # Match "A supported by B[, C, and D]" and similar.
@@ -275,7 +270,6 @@ class OppositionParser(InteractionParser):
     markers = [
         'Opposed by',
         'opposed by',
-        'opposed by the',
     ]
 
     # Match "A opposed by B[, C, and D]" and similar.

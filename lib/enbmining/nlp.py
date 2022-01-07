@@ -2,8 +2,8 @@ from itertools import chain
 
 import nltk
 
-from .interaction_parsers import (AgreementParser, OnBehalfParser,
-                                  OppositionParser, SupportParser)
+from .parsers import (AgreementParser, OnBehalfParser, OppositionParser,
+                      SupportParser)
 
 ABBREV = set(
     [
@@ -54,10 +54,16 @@ class WordTokenizer:
 
     def __init__(self, entities):
         """Initializes a tokenizer from a set of entities."""
-        mwes = filter(
-            lambda mw: len(mw) > 1, [entity.split() for entity in entities]
+        # Tokenize multi-word entities to identify them as such (this makes it
+        # handle special characters in entity names).
+        mwes = list(
+            filter(
+                lambda mw: len(mw) > 1,
+                [nltk.word_tokenize(entity) for entity in entities],
+            )
         )
-        self.tokenizer = nltk.tokenize.MWETokenizer(list(mwes), separator=' ')
+        # Aggregate them using underscore.
+        self.tokenizer = nltk.tokenize.MWETokenizer(mwes, separator='_')
 
     def tokenize(self, text):
         return self.tokenizer.tokenize(nltk.word_tokenize(text))
@@ -82,9 +88,14 @@ class POSTagger:
 
     @staticmethod
     def _init_model(entities):
-        model = {entity: 'ENT' for entity in entities}
+        def encode_token(token):
+            return '_'.join(nltk.word_tokenize(token))
+
+        # Create tagging model compatible with the multi-word expression
+        # tokenizer in WordTokenizer.
+        model = {encode_token(entity): 'ENT' for entity in entities}
         model |= {
-            marker: parser.tag
+            encode_token(marker): parser.tag
             for parser in PARSERS
             for marker in parser.markers
         }

@@ -1,11 +1,15 @@
 import fire
 from enbmining import Intervention, InterventionScraper
-from enbmining.utils import load_csv, load_entities, load_html, print_progress
+from enbmining.utils import Entity, load_csv, load_html, print_progress
 
 
 def main(html_folder, issues_path, entities_path, output_path):
 
-    entities = load_entities(entities_path)
+    # entities_path = 'data/entities_interactions.txt'
+    # html_folder = 'data/html'
+    # issues_path = 'data/issues.csv'
+
+    entities = Entity.load_entities(entities_path)
     issues = load_csv(issues_path)
 
     # Extract interventions.

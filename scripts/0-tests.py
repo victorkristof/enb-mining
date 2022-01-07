@@ -1,11 +1,11 @@
-from enbmining import InteractionScraper
-from enbmining.utils import load_csv, load_entities, load_html
+from enbmining import InteractionScraper, InterventionScraper
+from enbmining.utils import Entity, load_csv, load_html
 
 entities_path = 'data/entities_interactions.txt'
 issues_path = 'data/issues.csv'
 html_folder = 'data/html'
 
-entities = load_entities(entities_path)
+entities = Entity.load_entities(entities_path)
 issues = load_csv(issues_path)
 
 issue = issues[0]
@@ -98,3 +98,17 @@ interactions = scraper._scrape_from_sentence(complex_sentence)
 for interaction in interactions:
     # if interaction.type != 'agreement':
     print(repr(interaction))
+
+for ent in entities:
+    if 'BASIC' in ent.name:
+        print(ent)
+
+scraper = InterventionScraper(html, issue, entities)
+sentence = '''26th BASIC Ministerial Meeting: BASIC (Brazil, South Africa,\
+ India, and China) countries convened in Durban, South Africa, from 19-20 May\
+ 2018.'''
+scraper._scrape_from_sentence(sentence)
+
+scraper = InterventionScraper(html, issue, entities)
+sentence = 'Senegal, for the African Group, agreed, noting that'
+scraper._scrape_from_sentence(sentence)

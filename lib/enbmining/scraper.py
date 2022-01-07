@@ -21,11 +21,21 @@ class Scraper:
 
     def __init__(self, html, issue, entities):
         """Initializes the scraper with some HTML, metadata about the ENB
-        issue,  and a set of entities."""
+        issue,  and a set of Entities."""
         self.soup = BeautifulSoup(html, 'lxml')
         self.issue = issue
-        self.entities = set(entities)
+        self.entities = entities
+        entities = [entity.name for entity in entities]
         self.pos_tagger = POSTagger(entities)
+
+    def scrape(self):
+        # Scraped interventions/interactions (list of list).
+        scraped = [
+            self._scrape_from_sentence(sentence)
+            for sentence in self.extract_sentences()
+        ]
+        # Flatten this nested list.
+        return flatten(scraped)
 
     def extract_sentences(self):
         content = self.soup.find(
@@ -41,15 +51,6 @@ class Scraper:
 
         return sentences
 
-    def scrape(self):
-        # Scraped interventions/interactions (list of list).
-        scraped = [
-            self._scrape_from_sentence(sentence)
-            for sentence in self.extract_sentences()
-        ]
-        # Flatten this nested list.
-        return flatten(scraped)
-
     @staticmethod
     def _get_paragraphs(content):
         """Filters only the paragraphs that are relevant.
@@ -62,6 +63,7 @@ class Scraper:
                 'BRIEF ANALYSIS OF',
                 'THINGS TO LOOK FOR',
                 'IN THE CORRIDORS',
+                'This issue of the Earth Negotiations Bulletin',
             ]
             return any([opinion in text for opinion in opinions])
 
