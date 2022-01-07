@@ -1,200 +1,200 @@
-Afghanistan
+Afghanistan [CVF, G-77, HAC, LDCs, Mountain Landlocked Developing Countries]
 Albania
-Algeria
+Algeria [African Group, Arab Group, G-77, LMDCs, OPEC]
 Andorra
-Angola
-Antigua and Barbuda: Antingua and Barbuda
-Argentina
-Armenia
-Australia
-Austria
-Azerbaijan
-Bahamas (the)
-Bahrain
-Bangladesh
-Barbados
-Belarus
-Belgium: Belguim
-Belize
-Benin
-Bhutan
-Bolivia: Boliva
-Bosnia and Herzegovina
-Botswana
-Brazil
-Brunei
-Bulgaria
-Burkina Faso
-Burundi
-Cambodia
-Cameroon
-Canada
-Cape Verde
+Angola [African Group, G-77, HAC, LDCs, OPEC]
+Antigua and Barbuda: Antingua and Barbuda [AOSIS, CARICOM, Cartagena Dialogue, G-77, GRULAC, HAC, SIDS]
+Argentina [ABU, CfRN, G-77, GRULAC, LMDCs]
+Armenia [CACAM, Group of Nine, Mountain Landlocked Developing Countries]
+Australia [APEC, Cartagena Dialogue, HAC, JUSCANZ, OECD, UG]
+Austria [EU, HAC, OECD]
+Azerbaijan [CACAM, Group of Nine]
+Bahamas (the) [AOSIS, CARICOM, G-77, GRULAC, HAC, SIDS]
+Bahrain [Arab Group, G-77, SIDS]
+Bangladesh [Cartagena Dialogue, CfRN, CVF, G-77, HAC, LDCs]
+Barbados [AOSIS, CARICOM, Cartagena Dialogue, CVF, G-77, GRULAC, HAC, SIDS]
+Belarus [EIT, UG]
+Belgium: Belguim [EU, HAC, OECD]
+Belize [AOSIS, CARICOM, Central American Group, CfRN, G-77, GRULAC, HAC, SICA, SIDS]
+Benin [African Group, G-77, HAC, LDCs]
+Bhutan [CVF, G-77, HAC, LDCs]
+Bolivia: Boliva [ALBA, G-77, GRULAC, LMDCs]
+Bosnia and Herzegovina [G-77]
+Botswana [African Group, CfRN, G-77]
+Brazil [ABU, BASIC, G-77, GRULAC, HAC]
+Brunei [APEC, G-77]
+Bulgaria [CG-11, Central Group, EU, EIT, HAC]
+Burkina Faso [African Group, CVF, G-77, HAC, LDCs]
+Burundi [African Group, Cartagena Dialogue, COMIFAC, G-77, HAC, LDCs]
+Cambodia [CfRN, CVF, G-77, HAC, LDCs]
+Cameroon [African Group, CfRN, COMIFAC, Congo Basin Countries, G-77]
+Canada [APEC, HAC, JUSCANZ, OECD, UG]
+Cape Verde [African Group, AOSIS, G-77, HAC, SIDS]
 Cayman Islands (the)
-Central African Republic (the)
-Chad
-Chile
-China
-Colombia: Columbia
-Comoros (the)
-Cook Islands (the): Cook Island
-Costa Rica
-Cote D'Ivoire
-Croatia
-Cuba
-Cyprus
-Czech Republic
-Democratic Republic of Congo (the): Democratic Republic of the Congo, DRC
-Denmark
-Djibouti
-Dominica
-Dominican Republic (the)
-Ecuador
-Egypt
-El Salvador
-Equatorial Guinea
-Eritrea
-Estonia
-Ethiopia
-Fiji
-Finland
-France
-Gabon
-Gambia
-Georgia
-Germany
-Ghana
-Greece
-Grenada
-Guatemala
-Guinea
-Guinea-Bissau: Guinea Bissau
-Guyana
-Haiti
-Honduras
-Hungary
-Iceland
-India
-Indonesia
-Iran
-Iraq
-Ireland
-Israel
-Italy
-Jamaica
-Japan
-Jordan
-Kazakhstan: Kazakstan
-Kenya
-Kiribati
-Kuwait
-Kyrgyzstan
-Laos
-Latvia
-Lebanon
-Lesotho
-Liberia
-Libya
-Liechtenstein: Lichtenstein
-Lithuania
-Luxembourg
+Central African Republic (the) [African Group, CfRN, COMIFAC, Congo Basin Countries, G-77, HAC, LDCs]
+Chad [African Group, COMIFAC, G-77, HAC, LDCs]
+Chile [AILAC, APEC, Cartagena Dialogue, G-77, GRULAC, OECD]
+China [APEC, BASIC, G-77, LMDCs]
+Colombia: Columbia [AILAC, Cartagena Dialogue, CVF, G-77, GRULAC, HAC, OECD]
+Comoros (the) [African Group, AOSIS, Arab Group, CVF, G-77, HAC, LDCs, SIDS]
+Cook Islands (the): Cook Island [AOSIS, SIDS]
+Costa Rica [AILAC, Cartagena Dialogue, Central American Group, CfRN, CVF, G-77, GRULAC, SICA]
+Cote D'Ivoire [African Group, G-77]
+Croatia [CG-11, Central Group, EU, EIT, HAC]
+Cuba [ALBA, AOSIS, G-77, GRULAC, HAC, LMDCs, SIDS]
+Cyprus [EU, HAC]
+Czech Republic [CG-11, EU, EIT, HAC, OECD, Visegrad Group]
+Democratic Republic of Congo (the): Democratic Republic of the Congo, DRC [African Group, CfRN, COMIFAC, Congo Basin Countries, CVF, G-77, HAC, LDCs, LMDCs]
+Denmark [Cartagena Dialogue, EU, HAC, OECD]
+Djibouti [African Group, Arab Group, G-77, HAC, LDCs]
+Dominica [ALBA, AOSIS, CARICOM, CfRN, G-77, GRULAC, HAC, LMDCs, SIDS]
+Dominican Republic (the) [AOSIS, Cartagena Dialogue, CfRN, CVF, G-77, GRULAC, HAC, SICA, SIDS]
+Ecuador [CfRN, G-77, GRULAC, LMDCs, OPEC]
+Egypt [African Group, Arab Group, G-77, LMDCs]
+El Salvador [Central American Group, G-77, GRULAC, LMDCs, SICA]
+Equatorial Guinea [African Group, CfRN, COMIFAC, Congo Basin Countries, G-77, HAC, OPEC]
+Eritrea [African Group, G-77, HAC, LDCs]
+Estonia [CG-11, EU, EIT, HAC, OECD]
+Ethiopia [African Group, Cartagena Dialogue, CVF, G-77, HAC, LDCs]
+Fiji [AOSIS, CfRN, CVF, G-77, HAC, SIDS]
+Finland [EU, HAC, OECD]
+France [Cartagena Dialogue, EU, HAC, OECD]
+Gabon [African Group, CfRN, COMIFAC, Congo Basin Countries, G-77, OPEC]
+Gambia [African Group, Cartagena Dialogue, CVF, G-77, HAC, LDCs]
+Georgia [Cartagena Dialogue, EIG, Group of Nine]
+Germany [Cartagena Dialogue, EU, HAC, OECD]
+Ghana [African Group, Cartagena Dialogue, CfRN, CVF, G-77]
+Greece [EU, HAC, OECD]
+Grenada [AOSIS, CARICOM, Cartagena Dialogue, CVF, G-77, GRULAC, HAC, SIDS]
+Guatemala [AILAC, Cartagena Dialogue, Central American Group, CfRN, CVF, G-77, GRULAC, SICA]
+Guinea [African Group, G-77, LDCs]
+Guinea-Bissau: Guinea Bissau [African Group, AOSIS, G-77, HAC, LDCs, SIDS]
+Guyana [AOSIS, CARICOM, CfRN, G-77, GRULAC, HAC, SIDS]
+Haiti [AOSIS, CARICOM, CVF, G-77, GRULAC, HAC, LDCs, SIDS]
+Honduras [AILAC, Central American Group, CfRN, CVF, G-77, GRULAC, SICA]
+Hungary [CG-11, EU, EIT, HAC, OECD, Visegrad Group]
+Iceland [OECD, UG]
+India [BASIC, CfRN, G-77, LMDCs]
+Indonesia [APEC, Cartagena Dialogue, CfRN, G-77, LMDCs]
+Iran [G-77, LMDCs, OPEC]
+Iraq [Arab Group, G-77, LMDCs, OPEC]
+Ireland [EU, HAC, OECD]
+Israel [OECD, UG]
+Italy [EU, HAC, OECD]
+Jamaica [AOSIS, CARICOM, CfRN, G-77, GRULAC, HAC, SIDS]
+Japan [APEC, JUSCANZ, OECD, UG]
+Jordan [Arab Group, G-77, LMDCs]
+Kazakhstan: Kazakstan [CACAM, Group of Nine, UG]
+Kenya [African Group, Cartagena Dialogue, CfRN, CVF, G-77]
+Kiribati [AOSIS, CVF, G-77, HAC, LDCs, SIDS]
+Kuwait [Arab Group, G-77, LMDCs, OPEC]
+Kyrgyzstan [CACAM, Group of Nine, Mountain Landlocked Developing Countries]
+Laos [CfRN, G-77, HAC, LDCs]
+Latvia [CG-11, EU, EIT, HAC, OECD]
+Lebanon [Arab Group, Cartagena Dialogue, CVF, G-77]
+Lesotho [African Group, CfRN, G-77, HAC, LDCs]
+Liberia [African Group, CfRN, G-77, HAC, LDCs]
+Libya [African Group, Arab Group, G-77, LMDCs, OPEC]
+Liechtenstein: Lichtenstein [EIG]
+Lithuania [CG-11, EU, EIT, HAC, OECD]
+Luxembourg [EU, HAC, OECD]
 Macedonia
-Madagascar
-Malawi
-Malaysia
-Maldives (the)
-Mali
-Malta
-Marshall Islands (the)
-Mauritania
-Mauritius
-Mexico
-Micronesia (the): Federated States of Micronesia
-Moldova
-Monaco
-Mongolia
+Madagascar [African Group, CfRN, CVF, G-77, HAC, LDCs]
+Malawi [African Group, Cartagena Dialogue, CfRN, CVF, G-77, HAC, LDCs]
+Malaysia [APEC, CfRN, G-77, LMDCs]
+Maldives (the) [AOSIS, Cartagena Dialogue, CVF, G-77, HAC, SIDS]
+Mali [African Group, CfRN, G-77, HAC, LDCs, LMDCs]
+Malta [EU, HAC]
+Marshall Islands (the) [AOSIS, Cartagena Dialogue, CVF, G-77, HAC, SIDS]
+Mauritania [African Group, Arab Group, G-77, HAC, LDCs]
+Mauritius [African Group, AOSIS, G-77, HAC, SIDS]
+Mexico [APEC, Cartagena Dialogue, EIG, GRULAC, HAC, OECD]
+Micronesia (the): Federated States of Micronesia [AOSIS, G-77, HAC, SIDS]
+Moldova [CACAM, Group of Nine]
+Monaco [EIG]
+Mongolia [CVF, G-77]
 Montenegro
-Morocco
-Mozambique
-Myanmar
-Namibia
-Nauru
-Nepal
-Netherlands (the)
-New Zealand
-Nicaragua
-Niger
-Nigeria
-Niue
-North Korea
-Norway: Norwary
-Oman
-Pakistan
-Palau
-Palestine
-Panama
-Papua New Guinea
-Paraguay
-Peru
-Philippines (the): Phillipines, Phillippines
-Poland
-Portugal
-Qatar
-Republic of Congo (the)
-Republic of Korea (the): South Korea
-Romania
-Russia (the): Russian Federation
-Rwanda
-Saint Kitts and Nevis: St. Kitts and Nevis
-Saint Lucia: St. Lucia
-Saint Vincent and the Grenadines: St. Vincent and the Grenadines
-Samoa
+Morocco [African Group, Arab Group, CVF, G-77]
+Mozambique [African Group, CfRN, G-77, HAC, LDCs]
+Myanmar [G-77, HAC, LDCs]
+Namibia [African Group, CfRN, G-77]
+Nauru [AOSIS, G-77, HAC, SIDS]
+Nepal [CVF, G-77, HAC, LDCs]
+Netherlands (the) [Cartagena Dialogue, EU, HAC, OECD]
+New Zealand [APEC, Cartagena Dialogue, JUSCANZ, OECD, UG]
+Nicaragua [ALBA, Central American Group, CfRN, G-77, GRULAC, LMDCs, SICA]
+Niger [African Group, CVF, G-77, HAC, LDCs]
+Nigeria [African Group, CfRN, G-77, OPEC]
+Niue [AOSIS, SIDS]
+North Korea [G-77]
+Norway: Norwary [Cartagena Dialogue, HAC, JUSCANZ, OECD, UG]
+Oman [Arab Group, G-77]
+Pakistan [CfRN, G-77, LMDCs]
+Palau [AOSIS, CVF, HAC, SIDS]
+Palestine [Arab Group, CVF, G-77]
+Panama [AILAC, Cartagena Dialogue, Central American Group, CfRN, G-77, GRULAC, SICA]
+Papua New Guinea [AOSIS, APEC, CfRN, CVF, G-77, HAC, SIDS]
+Paraguay [AILAC, CfRN, G-77, GRULAC]
+Peru [AILAC, APEC, Cartagena Dialogue, G-77, GRULAC]
+Philippines (the): Phillipines, Phillippines [APEC, CVF, G-77]
+Poland [CG-11, EU, EIT, HAC, OECD, Visegrad Group]
+Portugal [EU, HAC, OECD]
+Qatar [Arab Group, G-77, LMDCs]
+Republic of Congo (the) [African Group, CfRN, COMIFAC, Congo Basin Countries, G-77, OPEC]
+Republic of Korea (the): South Korea [APEC, EIG, OECD]
+Romania [CG-11, Central Group, EU, EIT, HAC]
+Russia (the): Russian Federation [APEC, EIT, UG]
+Rwanda [African Group, Cartagena Dialogue, COMIFAC, CVF, G-77, HAC, LDCs]
+Saint Kitts and Nevis: St. Kitts and Nevis [AOSIS, CARICOM, G-77, GRULAC, SIDS]
+Saint Lucia: St. Lucia [AOSIS, CARICOM, CfRN, CVF, G-77, GRULAC, HAC, SIDS]
+Saint Vincent and the Grenadines: St. Vincent and the Grenadines [AOSIS, CARICOM, G-77, GRULAC, HAC, SIDS]
+Samoa [AOSIS, Cartagena Dialogue, CfRN, CVF, G-77, HAC, SIDS]
 San Marino
-Sao Tome e Principe
-Saudi Arabia: Saudia Arabia
-Senegal
+Sao Tome e Principe [African Group, AOSIS, COMIFAC, G-77, LDCs, SIDS]
+Saudi Arabia: Saudia Arabia [Arab Group, G-77, LMDCs, OPEC]
+Senegal [African Group, CVF, G-77, HAC, LDCs]
 Serbia
-Yugoslavia: Serbia and Montenegro
-Seychelles
-Sierra Leone
-Singapore
-Slovakia
-Slovenia
-Solomon Islands (the)
-Somalia
-South Africa
-South Sudan
-Spain
-Sri Lanka
-Sudan
-Suriname
-Swaziland
-Sweden
-Switzerland: Switerland, Switzer
-Syria: Syrian Arab Republic
+Seychelles [African Group, AOSIS, G-77, HAC, SIDS]
+Sierra Leone [African Group, CfRN, G-77, HAC, LDCs]
+Singapore [AOSIS, APEC, CfRN, G-77, HAC, SIDS]
+Slovakia [CG-11, EU, EIT, HAC, OECD, Visegrad Group]
+Slovenia [CG-11, EU, EIT, HAC, OECD]
+Solomon Islands (the) [AOSIS, CfRN, G-77, HAC, LDCs, SIDS]
+Somalia [African Group, Arab Group, G-77, HAC, LDCs]
+South Africa [African Group, BASIC, CfRN, G-77]
+South Sudan [African Group, CVF, G-77, LDCs]
+Spain [Cartagena Dialogue, EU, HAC, OECD]
+Sri Lanka [CVF, G-77, LMDCs]
+Sudan [African Group, Arab Group, CfRN, CVF, G-77, HAC, LDCs, LMDCs]
+Suriname [AOSIS, CARICOM, CfRN, G-77, GRULAC, HAC, SIDS]
+Swaziland [African Group, Cartagena Dialogue, G-77]
+Sweden [Cartagena Dialogue, EU, HAC, OECD]
+Switzerland: Switerland, Switzer [Cartagena Dialogue, EIG, JUSCANZ, OECD]
+Syria: Syrian Arab Republic [Arab Group, G-77, LMDCs]
 Taiwan
-Tajikistan
-Tanzania
-Thailand
-Timor-Leste: Timor Leste
-Togo
-Tonga
-Trinidad and Tobago: Trindad and Tobago, Trinindad and Tobago
-Tunisia
-Turkey
-Turkmenistan
-Tuvalu
-Uganda
-Ukraine
-United Arab Emirates (the): UAE
-United Kingdom (the): UK
-United States (the): US
-Uruguay: Uraguay
-Uzbekistan
-Vanuatu
-Venezuela: Venezula
-Vietnam: Viet Nam
-Yemen
+Tajikistan [CACAM, Cartagena Dialogue, G-77, Group of Nine, Mountain Landlocked Developing Countries]
+Tanzania [African Group, Cartagena Dialogue, CVF, G-77, HAC, LDCs]
+Thailand [APEC, CfRN, G-77, LMDCs]
+Timor-Leste: Timor Leste [AOSIS, CVF, G-77, HAC, LDCs, SIDS]
+Togo [African Group, G-77, HAC, LDCs]
+Tonga [AOSIS, G-77, SIDS]
+Trinidad and Tobago: Trindad and Tobago, Trinindad and Tobago [AOSIS, CARICOM, G-77, GRULAC, HAC, SIDS]
+Tunisia [African Group, Arab Group, CVF, G-77]
+Turkey [OECD]
+Turkmenistan [CACAM, G-77, Group of Nine]
+Tuvalu [AOSIS, CVF, HAC, LDCs, SIDS]
+Uganda [African Group, Cartagena Dialogue, CfRN, G-77, HAC, LDCs]
+Ukraine [EIT, UG]
+United Arab Emirates (the): UAE [Arab Group, Cartagena Dialogue, G-77, OPEC]
+United Kingdom (the): UK [Cartagena Dialogue, HAC, OECD]
+United States (the): US [APEC, HAC, JUSCANZ, OECD, UG]
+Uruguay: Uraguay [ABU, CfRN, G-77, GRULAC]
+Uzbekistan [CACAM, Group of Nine]
+Vanuatu [AOSIS, CfRN, CVF, G-77, HAC, LDCs, SIDS]
+Venezuela: Venezula [ALBA, G-77, GRULAC, LMDCs, OPEC]
+Vietnam: Viet Nam [APEC, CfRN, CVF, G-77, LMDCs]
+Yemen [Arab Group, CVF, G-77, HAC, LDCs]
+Yugoslavia: Serbia and Montenegro
 Zaire
-Zambia
-Zimbabwe: Zimababwe
+Zambia [African Group, CfRN, G-77, HAC, LDCs]
+Zimbabwe: Zimababwe [African Group, G-77]
