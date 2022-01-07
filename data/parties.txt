@@ -32,14 +32,11 @@ Canada
 Cape Verde
 Cayman Islands (the)
 Central African Republic (the)
-Central American States (the)
 Chad
 Chile
 China
 Colombia: Columbia
 Comoros (the)
-Congo - Brazzaville
-Congo - Kinshasa
 Cook Islands (the): Cook Island
 Costa Rica
 Cote D'Ivoire
@@ -90,7 +87,6 @@ Jordan
 Kazakhstan: Kazakstan
 Kenya
 Kiribati
-Korea
 Kuwait
 Kyrgyzstan
 Laos
@@ -112,7 +108,6 @@ Malta
 Marshall Islands (the)
 Mauritania
 Mauritius
-Mayotte
 Mexico
 Micronesia (the): Federated States of Micronesia
 Moldova
@@ -126,14 +121,12 @@ Namibia
 Nauru
 Nepal
 Netherlands (the)
-Nevis
 New Zealand
 Nicaragua
 Niger
 Nigeria
 Niue
 North Korea
-North Macedonia
 Norway: Norwary
 Oman
 Pakistan
@@ -152,14 +145,16 @@ Republic of Korea (the): South Korea
 Romania
 Russia (the): Russian Federation
 Rwanda
-Saint Kitts: St. Kitts
+Saint Kitts and Nevis: St. Kitts and Nevis
 Saint Lucia: St. Lucia
 Saint Vincent and the Grenadines: St. Vincent and the Grenadines
 Samoa
+San Marino
+Sao Tome e Principe
 Saudi Arabia: Saudia Arabia
 Senegal
 Serbia
-Serbia and Montenegro
+Yugoslavia: Serbia and Montenegro
 Seychelles
 Sierra Leone
 Singapore
@@ -189,18 +184,17 @@ Tunisia
 Turkey
 Turkmenistan
 Tuvalu
-US (the): United States
 Uganda
 Ukraine
 United Arab Emirates (the): UAE
 United Kingdom (the): UK
+United States (the): US
 Uruguay: Uraguay
 Uzbekistan
 Vanuatu
 Venezuela: Venezula
 Vietnam: Viet Nam
 Yemen
-Yugoslavia
 Zaire
 Zambia
 Zimbabwe: Zimababwe

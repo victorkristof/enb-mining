@@ -1,42 +1,41 @@
-African Group: Africa Group
-CACAM: Albania and Moldova, Albania and Moldova Group, CAC&M
-AOSIS: Alliance of Small Island States, Alliance of Small Island States (AOSIS)
-Arab Group
-Arabian Countries Group
-APEC: Asia Pacific Economic Cooperation, Asia Pacific Economic Cooperation (APEC)
+ABU: Argentina, Brazil and Uruguay; Argentina, Brazil, and Uruguay
+AILAC: Independent Alliance of Latin America and the Caribbean, Independent Alliance of Latin America and the Caribbean (AILAC), Independent Association of Latin America and the Caribbean
 ALBA: Bolivarian Alliance for the Peoples of our America, Bolivarian Alliance for the Peoples of our America (ALBA), Bolivarian Alliance for the Peoples of Our America, Bolivarian Alliance for the Peoples of Our America (ALBA)
+AOSIS: Alliance of Small Island States, Alliance of Small Island States (AOSIS)
+APEC: Asia Pacific Economic Cooperation, Asia Pacific Economic Cooperation (APEC)
+African Group: Africa Group
+Arab Group: Arabian Countries Group
 BASIC: Brazil, South Africa, India and China; Brazil, South Africa, India and China (BASIC); BASIC (Brazil, South Africa, India and China); Brazil, South Africa, India, and China (BASIC); BASIC (Brazil, South Africa, India, and China); BASIC group (Brazil, South Africa, India and China)
-BINGOS: Business and Industry Non-Governmental Organizations
+CACAM: Albania and Moldova, Albania and Moldova Group, CAC&M
 CARICOM: Caribbean Community, Caribbean Community (CARICOM)
-Cartagena Dialogue
-COMIFAC: Central Africa Forests Commission, Central Africa Forests Commission (COMIFAC), Central Africa Forestry Commission
-Congo Basin Countries (the)
-Central American Group
-CICA: Central American Integration System
 CG-11: Central Group Eleven, Central Group 11
-CAN: Climate Action Network
+COMIFAC: Central Africa Forests Commission, Central Africa Forests Commission (COMIFAC), Central Africa Forestry Commission
+CVF: Climate Vulnerable Forum
+Cartagena Dialogue
+Central American Group: Central American States
+Central Group
+CfRN: Coalition for Rainforest Nations, Coalition for Rainforest Nations (CfRN), COALITION FOR RAINFOREST NATIONS (CfRN)
 Climate Alliance
 Climate Group
-CVF: Climate Vulnerable Forum
-CfRN: Coalition for Rainforest Nations, Coalition for Rainforest Nations (CfRN), COALITION FOR RAINFOREST NATIONS (CfRN)
-EIT: Economies in Transition, EITs, economies in transition, Economies in transition
+Congo Basin Countries
 EIG: Environmental Integrity Group
+EIT: Economies in Transition, EITs, economies in transition, Economies in transition
 EU: European Union
 G-77/China: G77, G-77, G-77 and China, G-77/ China, G-77/China, G77 and China, G77-China, G77/China, Group of 77 and China, Group of 77
 GRULAC: Group of Latin American and Caribbean Countries, Group of Latin American and Caribbean Countries (GRULAC), Group of Latin American and Caribbean countries
 Group of Nine
 HAC: High Ambition Coalition
-AILAC: Independent Alliance of Latin America and the Caribbean, Independent Alliance of Latin America and the Caribbean (AILAC), Independent Association of Latin America and the Caribbean
 Indigenous Caucus
 JUSCANZ
-League of Arab States
 LDCs: Least Developed Countries, LDC Group
 LMDCs: Like-Minded Developing Countries, LMDC, Like-Minded Developing Countries (LMDCs), Like-Minded Developing Countries (LMDC), Like Minded Developing Countries, Like Minded Developing Countries (LMDCs), Like Minded Developing Countries (LMDC), Like-minded Developing Countries, Like minded Developing Countries (LMDCs), Like minded Developing Countries (LMDC)
+League of Arab States
 Mountain Landlocked Developing Countries: Mountainous Landlocked Developing Countries, Landlocked Mountainous Developing Countries
-OPEC
 OECD: Organisation for Economic Co-operation and Development
-SIDS: Small Island Developing States, Small Island Developing States (SIDS), small island developing states, small island developing states (SIDS), small islands developing States (SIDS)
+OPEC
 SADC: Southern African Development Community, Southern African Development Community (SADC)
+SICA: Central American Integration System
+SIDS: Small Island Developing States, Small Island Developing States (SIDS), small island developing states, small island developing states (SIDS), small islands developing States (SIDS)
 UG: Umbrella Group
 Visegrad Group
-WEOG
+WEOG: Western Europe and Others
