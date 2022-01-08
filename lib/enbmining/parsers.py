@@ -26,6 +26,9 @@ class InterventionParser(Parser):
         tagged_sentence = self._remove_in_parenthesis(tagged_sentence)
         # Collapse the 'on-behalf' interactions.
         tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
+        # Collapse the cities (City, Country)
+        tagged_sentence = CityParser.collapse(tagged_sentence)
+        print(tagged_sentence)
         return self._to_interventions(
             set([token for token, tag in tagged_sentence if tag in ENTITY])
         )
@@ -384,10 +387,53 @@ class AgreementParser(InteractionParser):
                 print('Error with node', type(node), node)
         return tagged_sentence
 
-    @staticmethod
-    def _collapse(subtree):
-        # Keep only the entities
+    @classmethod
+    def _collapse(cls, subtree):
+        # Keep only the entities.
         entities = [(token, tag) for token, tag in subtree if tag in ENTITY]
         # Create new node whose tag is "AGR" and whose token is the list of
         # entities.
-        return (entities, 'AGR')
+        return (entities, cls.tag)
+
+
+class CityParser(InteractionParser):
+
+    tag = 'CTY'
+    markers = list()  # No markers.
+
+    # Match a city, usually specified as "City, Country". This is identified as
+    # an intervention for the country it is obviously not one.
+
+    chunk_rules = [ChunkRule(r'<NNP><,><PAR>', 'City, Country')]
+
+    chunk_parsers = [
+        {
+            'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
+            'aggregator': None,
+        }
+    ]
+
+    def __init__(self, sentence, issue):
+        super().__init__(sentence, issue, 'city')
+
+    @classmethod
+    def collapse(cls, tagged_sentence):
+        # There's only one parser for city parser.
+        chunk_parser = cls.chunk_parsers[0]['parser']
+        tree = chunk_parser.parse(tagged_sentence)
+        tagged_sentence = list()
+        for node in tree:
+            # The subtrees (chunks) are the "CTY" tag; we collapse them.
+            if type(node) == Tree:
+                tagged_sentence.append(cls._collapse(node))
+            # The others are kept as is.
+            elif type(node) == tuple:
+                tagged_sentence.append(node)
+            else:
+                print('Error with node', type(node), node)
+        return tagged_sentence
+
+    @classmethod
+    def _collapse(cls, subtree):
+        # Create new node whose tag is "CTY" from the subtree.
+        return ([(tk, tg) for tk, tg in subtree], cls.tag)
