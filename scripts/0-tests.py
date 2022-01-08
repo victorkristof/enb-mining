@@ -14,19 +14,18 @@ issues = load_csv(issues_path)
 issue = issues[0]
 html = load_html(html_folder, issue['id'])
 
-# Test "on behalf".
+# %% Test "on behalf".
 scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
     'Switzerland, for the EIG, proposed X.',
     'Switzerland for the EIG proposed X.',
-    'Switzerland, on behalf of the EIG, proposed X.',
-    'Switzerland, on behalf of the EIG and Canada, proposed X.',
-    'Switzerland, on behalf of the EIG, and Canada, proposed X.',
+    'Switzerland, for Canada, proposed X.',
+    'Switzerland, on behalf of Canada, proposed',
 ]
 for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
 
-# Test "agreement"
+# %% Test "agreement"
 scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
     'JAMAICA and TUVALU asked for',
@@ -40,7 +39,7 @@ sentences = [
 for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
 
-# Test "supported by".
+# %% Test "supported by".
 scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
     'CHINA, supported by EGYPT',
@@ -52,7 +51,7 @@ sentences = [
 for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
 
-# Test "opposed by".
+# %% Test "opposed by".
 scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
     'JAMAICA, opposed by the EU, asked for',
@@ -62,7 +61,7 @@ sentences = [
 for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
 
-# Test with a complex sentence.
+# %% Test with a complex sentence.
 scraper = InteractionScraper(html, issue, parties, groupings)
 complex_sentence = '''Supported by Lesotho, for the LDCs, Spain, for the EU,\
  PANAMA, SOUTH AFRICA, AUSTRALIA, COLOMBIA, MALAWI, the PHILIPPINES and NORWAY\
@@ -72,6 +71,7 @@ for interaction in interactions:
     if interaction.type != 'agreement':
         print(interaction.__repr__())
 
+# %% Test with a complex sentence.
 scraper = InteractionScraper(html, issue, parties, groupings)
 complex_sentence = '''Switzerland, for the EIG, NORWAY, for Australia, New\
  Zealand, the US, Canada and Japan, the EU and MARSHALL ISLANDS, opposed by\
@@ -81,6 +81,7 @@ for interaction in interactions:
     if interaction.type != 'agreement':
         print(interaction.__repr__())
 
+# %% Test with a complex sentence.
 scraper = InteractionScraper(html, issue, parties, groupings)
 complex_sentence = '''CUBA, for Algeria, Argentina, Brazil, China, Ecuador,\
  Egypt, Malaysia, Nicaragua, the Philippines, Saudi Arabia, Venezuela,\
@@ -91,6 +92,7 @@ for interaction in interactions:
     if interaction.type != 'agreement':
         print(repr(interaction))
 
+# %% Test with a complex sentence.
 scraper = InteractionScraper(html, issue, parties, groupings)
 complex_sentence = '''Guatemala for AILAC, Mexico for the Environmental\
  Integrity Group, the EU, the Philippines, Bangladesh, the Dominican Republic,\
@@ -99,16 +101,19 @@ interactions = scraper._scrape_from_sentence(complex_sentence)
 for interaction in interactions:
     print(repr(interaction))
 
+# %% Test intervention.
 scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = '''26th BASIC Ministerial Meeting: BASIC (Brazil, South Africa,\
  India, and China) countries convened in Durban, South Africa, from 19-20 May\
  2018.'''
 scraper._scrape_from_sentence(sentence)
 
+# %% Test intervention.
 scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = 'Senegal, for the African Group, agreed, noting that'
 scraper._scrape_from_sentence(sentence)
 
+# %% Test intervention.
 scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = 'Senegal, for Zaire and Mauritania, agreed, noting that'
 scraper._scrape_from_sentence(sentence)

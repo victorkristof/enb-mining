@@ -18,25 +18,25 @@ class Parser(ABC):
     def parse(self, tagged_sentence):
         ...
 
+    @staticmethod
+    def _preprocess(tagged_sentence, Chunkers):
+        """Preprocesses a sentence with a list of chunkers."""
+        for Chunker in Chunkers:
+            chunker = Chunker()
+            tagged_sentence = chunker.chunk(tagged_sentence)
+        return tagged_sentence
+
 
 class InterventionParser(Parser):
     def parse(self, tagged_sentence):
-        # Remove patterns "(Country)", corresponding to people from a country
-        # being mentionned in the bulletin.
-        tagged_sentence = self._remove_in_parenthesis(tagged_sentence)
+        # Preprocess the sentence.
+        Processors = [InParenthesisChunker, CityChunker]
+        tagged_sentence = self._preprocess(tagged_sentence, Processors)
         # Collapse the 'on-behalf' interactions.
         tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
-        # Collapse the cities (City, Country)
-        tagged_sentence = CityParser.collapse(tagged_sentence)
-        print(tagged_sentence)
         return self._to_interventions(
             set([token for token, tag in tagged_sentence if tag in ENTITY])
         )
-
-    @staticmethod
-    def _remove_in_parenthesis(tagged_sentence):
-        parenthesis_chunker = InParenthesis()
-        return parenthesis_chunker.chunk(tagged_sentence)
 
     def _to_interventions(self, entities):
         return [
@@ -51,11 +51,20 @@ class InteractionParser(Parser):
         self.type = interaction_type
 
     def parse(self, tagged_sentence):
+        """Parses a tagged sentence and returns a list of Interactions."""
+
+        # Preprocess the sentence.
+        Processors = [CityChunker]
+        tagged_sentence = self._preprocess(tagged_sentence, Processors)
+        # Parse it.
         return flatten(
             [self._parse(cp, tagged_sentence) for cp in self.chunk_parsers]
         )
 
     def _parse(self, chunk_parser, tagged_sentence):
+        """Parses a tagged sentence with a given parser and returns a list of
+        Interactions."""
+
         args, aggregator, chunk_parser = (
             chunk_parser.get('args', {}),
             chunk_parser.get('aggregator'),
@@ -68,7 +77,7 @@ class InteractionParser(Parser):
         if self.type != 'on-behalf':
             tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
             # Collapse the 'agreement' interactions if it's not one (depends on
-            # the collapse of 'on-behalf' interactions.
+            # the collapse of 'on-behalf' interactions, so it comes after).
             if self.type != 'agreement':
                 tagged_sentence = AgreementParser.collapse(tagged_sentence)
 
@@ -81,6 +90,8 @@ class InteractionParser(Parser):
 
     @staticmethod
     def index_of(target_tag, subtree):
+        """Finds the index of a target tag in a subtree."""
+
         for i, (_, tag) in enumerate(subtree):
             if tag == target_tag:
                 return i
@@ -97,6 +108,26 @@ class InteractionParser(Parser):
             else:
                 new_subtree.append((token, tag))
         return new_subtree
+
+    @classmethod
+    def _collapse(cls, tagged_sentence, parser, collapse_func):
+        """Collapses a tag using a parser and a collapse function.
+
+        The collapse function takes a subtree as argument and returns a list of
+        (token, tag) tuples.
+        """
+        tree = parser.parse(tagged_sentence)
+        tagged_sentence = list()
+        for node in tree:
+            # The subtrees are chunks that we want to collapse.
+            if type(node) == Tree:
+                tagged_sentence.extend(collapse_func(node))
+            # The others are kept as is.
+            elif type(node) == tuple:
+                tagged_sentence.append(node)
+            else:
+                print('Error with node', type(node), node)
+        return tagged_sentence
 
     def markedsubtree2interactions(self, subtree, inverse=False):
         """Converts a subtree with a marker into a list of interactions.
@@ -158,29 +189,6 @@ class InteractionParser(Parser):
             Interaction(a, b, self.sentence, self.issue, self.type)
             for a, b in combine(subtree, subtree)
         ]
-
-
-class InParenthesis:
-    def __init__(self):
-        self.tag = 'PTH'
-        chunk_rules = [ChunkRule(r'<\(><PAR|GRP><\)>', 'In parenthesis')]
-        self.chunk_parser = RegexpChunkParser(
-            chunk_rules, chunk_label=self.tag
-        )
-
-    def chunk(self, tagged_sentence):
-        tree = self.chunk_parser.parse(tagged_sentence)
-        tagged_sentence = list()
-        for node in tree:
-            # The subtree is a "PTH" chunk; we transform them into tagged list.
-            if type(node) == Tree:
-                tagged_sentence.append((node[:], 'PTH'))
-            # The others are kept as is.
-            elif type(node) == tuple:
-                tagged_sentence.append(node)
-            else:
-                print('Error with node', type(node), node)
-        return tagged_sentence
 
 
 class OnBehalfParser(InteractionParser):
@@ -260,22 +268,6 @@ class OnBehalfParser(InteractionParser):
         # The second parser matches parties on behalf of other parties.
         parser = cls.chunk_parsers[1]['parser']
         return cls._collapse(tagged_sentence, parser, collapse_func)
-
-    @classmethod
-    def _collapse(cls, tagged_sentence, parser, collapse_func):
-        """Collapses an OBH tag using a parser and a collapse function."""
-        tree = parser.parse(tagged_sentence)
-        tagged_sentence = list()
-        for node in tree:
-            # The subtrees are "OBH" chunks; we collapse them.
-            if type(node) == Tree:
-                tagged_sentence.extend(collapse_func(node))
-            # The others are kept as is.
-            elif type(node) == tuple:
-                tagged_sentence.append(node)
-            else:
-                print('Error with node', type(node), node)
-        return tagged_sentence
 
 
 class SupportParser(InteractionParser):
@@ -372,14 +364,35 @@ class AgreementParser(InteractionParser):
 
     @classmethod
     def collapse(cls, tagged_sentence):
+        def collapse_func(subtree):
+            # Keep only the entities.
+            entities = [
+                (token, tag) for token, tag in subtree if tag in ENTITY
+            ]
+            # Create new node whose tag is "AGR" and whose token is the list of
+            # entities.
+            return [(entities, cls.tag)]
+
         # There's only one parser for agreement interactions.
-        chunk_parser = cls.chunk_parsers[0]['parser']
-        tree = chunk_parser.parse(tagged_sentence)
+        parser = cls.chunk_parsers[0]['parser']
+        return cls._collapse(tagged_sentence, parser, collapse_func)
+
+
+class Chunker:
+
+    """A class that enables to define chunk to tag in a tagged sentence."""
+
+    def __init__(self, tag, chunk_rules):
+        self.tag = tag
+        self.chunk_parser = RegexpChunkParser(chunk_rules, chunk_label=tag)
+
+    def chunk(self, tagged_sentence):
+        tree = self.chunk_parser.parse(tagged_sentence)
         tagged_sentence = list()
         for node in tree:
-            # The subtrees (chunks) are the "AGR" tag; we collapse them.
+            # The subtree is the chunk; we transform it into tagged list.
             if type(node) == Tree:
-                tagged_sentence.append(cls._collapse(node))
+                tagged_sentence.append((node[:], self.tag))
             # The others are kept as is.
             elif type(node) == tuple:
                 tagged_sentence.append(node)
@@ -387,53 +400,22 @@ class AgreementParser(InteractionParser):
                 print('Error with node', type(node), node)
         return tagged_sentence
 
-    @classmethod
-    def _collapse(cls, subtree):
-        # Keep only the entities.
-        entities = [(token, tag) for token, tag in subtree if tag in ENTITY]
-        # Create new node whose tag is "AGR" and whose token is the list of
-        # entities.
-        return (entities, cls.tag)
+
+class InParenthesisChunker(Chunker):
+
+    """Tag patterns "(Country)", corresponding to people from a country
+    being mentionned in the bulletin."""
+
+    def __init__(self):
+        chunk_rules = [ChunkRule(r'<\(><PAR><\)>', 'In parenthesis')]
+        super().__init__(tag='PTH', chunk_rules=chunk_rules)
 
 
-class CityParser(InteractionParser):
+class CityChunker(Chunker):
 
-    tag = 'CTY'
-    markers = list()  # No markers.
+    """Tag patterns "City, Country". This is otherwise identified as an
+    intervention for the country it is obviously not one."""
 
-    # Match a city, usually specified as "City, Country". This is identified as
-    # an intervention for the country it is obviously not one.
-
-    chunk_rules = [ChunkRule(r'<NNP><,><PAR>', 'City, Country')]
-
-    chunk_parsers = [
-        {
-            'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
-            'aggregator': None,
-        }
-    ]
-
-    def __init__(self, sentence, issue):
-        super().__init__(sentence, issue, 'city')
-
-    @classmethod
-    def collapse(cls, tagged_sentence):
-        # There's only one parser for city parser.
-        chunk_parser = cls.chunk_parsers[0]['parser']
-        tree = chunk_parser.parse(tagged_sentence)
-        tagged_sentence = list()
-        for node in tree:
-            # The subtrees (chunks) are the "CTY" tag; we collapse them.
-            if type(node) == Tree:
-                tagged_sentence.append(cls._collapse(node))
-            # The others are kept as is.
-            elif type(node) == tuple:
-                tagged_sentence.append(node)
-            else:
-                print('Error with node', type(node), node)
-        return tagged_sentence
-
-    @classmethod
-    def _collapse(cls, subtree):
-        # Create new node whose tag is "CTY" from the subtree.
-        return ([(tk, tg) for tk, tg in subtree], cls.tag)
+    def __init__(self):
+        chunk_rules = [ChunkRule(r'<NNP><,><PAR>', 'City, Country')]
+        super().__init__(tag='CTY', chunk_rules=chunk_rules)
