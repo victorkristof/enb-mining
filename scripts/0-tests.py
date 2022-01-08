@@ -89,7 +89,7 @@ complex_sentence = '''CUBA, for Algeria, Argentina, Brazil, China, Ecuador,\
 interactions = scraper._scrape_from_sentence(complex_sentence)
 for interaction in interactions:
     if interaction.type != 'agreement':
-        print(interaction.__repr__())
+        print(repr(interaction))
 
 scraper = InteractionScraper(html, issue, parties, groupings)
 complex_sentence = '''Guatemala for AILAC, Mexico for the Environmental\
@@ -97,8 +97,7 @@ complex_sentence = '''Guatemala for AILAC, Mexico for the Environmental\
  Viet Nam, Venezuela, and Sudan for the African Group, stressed '''
 interactions = scraper._scrape_from_sentence(complex_sentence)
 for interaction in interactions:
-    if interaction.type != 'agreement':
-        print(repr(interaction))
+    print(repr(interaction))
 
 scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = '''26th BASIC Ministerial Meeting: BASIC (Brazil, South Africa,\
@@ -108,4 +107,8 @@ scraper._scrape_from_sentence(sentence)
 
 scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = 'Senegal, for the African Group, agreed, noting that'
+scraper._scrape_from_sentence(sentence)
+
+scraper = InterventionScraper(html, issue, parties, groupings)
+sentence = 'Senegal, for Zaire and Mauritania, agreed, noting that'
 scraper._scrape_from_sentence(sentence)

@@ -55,9 +55,12 @@ class InteractionParser(Parser):
     def _parse(self, chunk_parser, tagged_sentence):
         args, aggregator, chunk_parser = (
             chunk_parser.get('args', {}),
-            chunk_parser['aggregator'],
+            chunk_parser.get('aggregator'),
             chunk_parser['parser'],
         )
+        # If an aggregator is not specified, we ignore the parser.
+        if aggregator is None:
+            return list()
         # Collapse the 'on-behalf' interactions if it's not one.
         if self.type != 'on-behalf':
             tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
@@ -191,49 +194,85 @@ class OnBehalfParser(InteractionParser):
         'for a number of members of',
     ]
 
-    # Match "A, on behalf of B[, C and D],", using the first and last comma as
-    # delimiter for the list of entities being represented, as well as "A for
-    # B", this time without comma but only for one entity being represented.
-    cr = r'<PAR|GRP><,><OBH>((<PAR|GRP><,>)*<PAR|GRP><CC><PAR|GRP>|<PAR|GRP><,>)|<PAR|GRP><OBH><PAR|GRP>'
-    # cr = r'<PAR><,><OBH><GRP><,>|'
-    # cr += r'<PAR><OBH><GRP>'
-    # cr += r'<PAR><,><OBH>((<PAR><,>)*<PAR><CC><PAR>|<PAR><,>)|'
-    # cr += r'<ENT><OBH><ENT>'
-    chunk_rules = [ChunkRule(cr, 'On behalf')]
+    # Match "A, on behalf of B", where A is a party and B is a grouping.
+    cr = r'<PAR><,><OBH><GRP><,>|'
+    # Same without the commas.
+    cr += r'<PAR><OBH><GRP>'
+    chunk_rules = [ChunkRule(cr, 'Party on behalf grouping')]
 
     chunk_parsers = [
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
-            'aggregator': 'markedsubtree2interactions',
+            'aggregator': None,  # This type of interaction is collapsed.
         }
     ]
+
+    # Match "A, on behalf of B[, C, and D],", using the first and last comma as
+    # delimiter for the list of entities being represented. In this case,
+    # a grouping can never appear on the right side of the regex.
+    cr = r'<PAR><,><OBH>((<PAR><,>)*<PAR><CC><PAR>|<PAR><,>)'
+    chunk_rules = [ChunkRule(cr, 'Party on behalf other parties')]
+    chunk_parsers.append(
+        {
+            'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
+            'aggregator': 'markedsubtree2interactions',
+        }
+    )
 
     def __init__(self, sentence, issue):
         super().__init__(sentence, issue, 'on-behalf')
 
     @classmethod
     def collapse(cls, tagged_sentence):
-        # There's only one parser for on-behalf interactions.
-        chunk_parser = cls.chunk_parsers[0]['parser']
-        tree = chunk_parser.parse(tagged_sentence)
+        # First, collapse the case where a party represents a grouping (keep
+        # the grouping only).
+        tagged_sentence = cls._collapse_party_obh_grouping(tagged_sentence)
+        # Second, collapse the case where a party represents other parties
+        # (keep all the parties, including the one representing the others).
+        tagged_sentence = cls._collapse_party_obh_parties(tagged_sentence)
+        return tagged_sentence
+
+    @classmethod
+    def _collapse_party_obh_grouping(cls, tagged_sentence):
+        def collapse_func(subtree):
+            # We find the index of the OBH tag that is a "pivot" to identify
+            # the right-side of the interaction, i.e., the entities that are
+            # being represented by one other entity.
+            index = cls.index_of('OBH', subtree)
+            return subtree[index + 1 :]
+
+        # The first parser matches parties on behalf of groupings.
+        parser = cls.chunk_parsers[0]['parser']
+        return cls._collapse(tagged_sentence, parser, collapse_func)
+
+    @classmethod
+    def _collapse_party_obh_parties(cls, tagged_sentence):
+        def collapse_func(subtree):
+            # We find the index of the OBG tag and remove it from the subtree
+            # to join the party on the left-side with the ones on the
+            # right-side.
+            index = cls.index_of('OBH', subtree)
+            return subtree[:index] + subtree[index + 1 :]
+
+        # The second parser matches parties on behalf of other parties.
+        parser = cls.chunk_parsers[1]['parser']
+        return cls._collapse(tagged_sentence, parser, collapse_func)
+
+    @classmethod
+    def _collapse(cls, tagged_sentence, parser, collapse_func):
+        """Collapses an OBH tag using a parser and a collapse function."""
+        tree = parser.parse(tagged_sentence)
         tagged_sentence = list()
         for node in tree:
             # The subtrees are "OBH" chunks; we collapse them.
             if type(node) == Tree:
-                tagged_sentence.extend(cls._collapse(cls, node))
+                tagged_sentence.extend(collapse_func(node))
             # The others are kept as is.
             elif type(node) == tuple:
                 tagged_sentence.append(node)
             else:
                 print('Error with node', type(node), node)
         return tagged_sentence
-
-    def _collapse(self, subtree):
-        # We find the index of the OBH tag that is a "pivot" to identify the
-        # right-side of the interaction, i.e., the entities that are being
-        # represented by one other entity.
-        index = self.index_of('OBH', subtree)
-        return subtree[index + 1 :]
 
 
 class SupportParser(InteractionParser):
