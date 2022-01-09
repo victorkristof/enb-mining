@@ -36,7 +36,7 @@ class Client:
             heading = row.find('a', class_='c-list-item__heading-link')
             meeting = heading.get_text()
             date = row.find('span', class_='c-list-item__meta-date')
-            date = date.get_text()
+            date = date.get_text().replace('–', '-')
             url = self._build_url(heading.get('href'))
             issue_details = self._scrape_issues(url)
             for issue in issue_details:
@@ -103,6 +103,7 @@ class Client:
             'span', class_='o-accordion__heading-text'
         ).get_text()
         if date != 'Pre event content':
+            date = date.replace('–', '-')  # Normalize dash.
             return date
         return None
 
