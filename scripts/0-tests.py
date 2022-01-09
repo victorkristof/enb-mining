@@ -106,7 +106,9 @@ scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = '''26th BASIC Ministerial Meeting: BASIC (Brazil, South Africa,\
  India, and China) countries convened in Durban, South Africa, from 19-20 May\
  2018.'''
-scraper._scrape_from_sentence(sentence)
+interventions = scraper._scrape_from_sentence(sentence)
+for intervention in interventions:
+    print(intervention)
 
 # %% Test intervention.
 scraper = InterventionScraper(html, issue, parties, groupings)

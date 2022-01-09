@@ -9,7 +9,9 @@ class Data(ABC):
     @classmethod
     def to_csv(cls, data, path):
         # Create dicts of datum.
-        dicts = [{k: getattr(datum, k) for k in cls._keys} for datum in data]
+        dicts = [
+            {k: repr(getattr(datum, k)) for k in cls._keys} for datum in data
+        ]
         # Add ID.
         dicts = [d | {'id': i + 1} for i, d in enumerate(dicts)]
         keys = ['id'] + cls._keys
@@ -30,7 +32,7 @@ class Intervention(Data):
         return ' '.join(
             [
                 'Intervention by',
-                self.entity,
+                repr(self.entity),
                 f'on {self.date}:',
                 f'"{self.sentence}"',
                 f'(Issue {self.issue_id})',
@@ -38,7 +40,7 @@ class Intervention(Data):
         )
 
     def __repr__(self):
-        return self.entity
+        return repr(self.entity)
 
 
 class Interaction(Data):
@@ -53,8 +55,8 @@ class Interaction(Data):
     ]
 
     def __init__(self, entity_a, entity_b, sentence, issue, interaction_type):
-        self.entity_a = entity_a.upper()
-        self.entity_b = entity_b.upper()
+        self.entity_a = entity_a
+        self.entity_b = entity_b
         self.sentence = sentence
         self.date = issue['issue_date']
         self.issue_id = int(issue['id'])
@@ -66,8 +68,8 @@ class Interaction(Data):
         return ' '.join(
             [
                 f'{self.type.title()}:',
-                self.entity_a,
-                self.entity_b,
+                repr(self.entity_a),
+                repr(self.entity_b),
                 f'on {self.date}:',
                 f'"{self.sentence}"',
                 f'(Issue {self.issue_id})',
@@ -75,4 +77,12 @@ class Interaction(Data):
         )
 
     def __repr__(self):
-        return ' '.join([self.entity_a, self.type, self.entity_b])
+        if self.type == 'on-behalf':
+            interacts = 'ON BEHALF OF'
+        elif self.type == 'agreement':
+            interacts = 'AGREES WITH'
+        elif self.type == 'support':
+            interacts = 'SUPPORTS'
+        elif self.type == 'opposition':
+            interacts = 'OPPOSES'
+        return ' '.join([repr(self.entity_a), interacts, repr(self.entity_b)])

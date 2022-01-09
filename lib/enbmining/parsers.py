@@ -10,9 +10,12 @@ ENTITY = set(['PAR', 'GRP'])
 
 
 class Parser(ABC):
-    def __init__(self, sentence, issue):
+    def __init__(self, sentence, issue, parties, groupings):
         self.sentence = sentence
         self.issue = issue
+        # Map (multi-word) tokens (see nlp.WordTokenizer) to Entity instances.
+        entities = parties + groupings
+        self._token2entity = {entity.token: entity for entity in entities}
 
     @abstractmethod
     def parse(self, tagged_sentence):
@@ -35,7 +38,13 @@ class InterventionParser(Parser):
         # Collapse the 'on-behalf' interactions.
         tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
         return self._to_interventions(
-            set([token for token, tag in tagged_sentence if tag in ENTITY])
+            set(
+                [
+                    self._token2entity[token]
+                    for token, tag in tagged_sentence
+                    if tag in ENTITY
+                ]
+            )
         )
 
     def _to_interventions(self, entities):
@@ -46,8 +55,8 @@ class InterventionParser(Parser):
 
 
 class InteractionParser(Parser):
-    def __init__(self, sentence, issue, interaction_type):
-        super().__init__(sentence, issue)
+    def __init__(self, sentence, issue, interaction_type, parties, groupings):
+        super().__init__(sentence, issue, parties, groupings)
         self.type = interaction_type
 
     def parse(self, tagged_sentence):
@@ -144,9 +153,12 @@ class InteractionParser(Parser):
         subtree = [(token, tag) for token, tag in subtree if tag in keep]
         # Find index of parser's tag that we will use as "pivot".
         index = self.index_of(self.tag, subtree)
-        # And keep only the tokens, not the tags.
-        left = [token for token, _ in subtree[:index]]
-        right = [token for token, _ in subtree[index + 1 :]]
+        # And keep only the tokens, not the tags, and get the Entity
+        # corresponding to the token.
+        left = [self._token2entity[token] for token, _ in subtree[:index]]
+        right = [
+            self._token2entity[token] for token, _ in subtree[index + 1 :]
+        ]
         # Return instances of Interactions.
         if inverse:
             return [
@@ -176,7 +188,14 @@ class InteractionParser(Parser):
         # ...and the the last one is entity A.
         a = subtree[-1]
         return [
-            Interaction(b, a, self.sentence, self.issue, self.type) for b in bs
+            Interaction(
+                self._token2entity[b],
+                self._token2entity[a],
+                self.sentence,
+                self.issue,
+                self.type,
+            )
+            for b in bs
         ]
 
     def list2interactions(self, subtree):
@@ -186,7 +205,13 @@ class InteractionParser(Parser):
         agree together, e.g., "A, B, and C"."""
         subtree = [token for token, tag in subtree if tag in ENTITY]
         return [
-            Interaction(a, b, self.sentence, self.issue, self.type)
+            Interaction(
+                self._token2entity[a],
+                self._token2entity[b],
+                self.sentence,
+                self.issue,
+                self.type,
+            )
             for a, b in combine(subtree, subtree)
         ]
 
@@ -230,8 +255,8 @@ class OnBehalfParser(InteractionParser):
         }
     )
 
-    def __init__(self, sentence, issue):
-        super().__init__(sentence, issue, 'on-behalf')
+    def __init__(self, sentence, issue, parties, groupings):
+        super().__init__(sentence, issue, 'on-behalf', parties, groupings)
 
     @classmethod
     def collapse(cls, tagged_sentence):
@@ -302,8 +327,8 @@ class SupportParser(InteractionParser):
         }
     )
 
-    def __init__(self, sentence, issue):
-        super().__init__(sentence, issue, 'support')
+    def __init__(self, sentence, issue, parties, groupings):
+        super().__init__(sentence, issue, 'support', parties, groupings)
 
 
 class OppositionParser(InteractionParser):
@@ -336,8 +361,8 @@ class OppositionParser(InteractionParser):
         }
     )
 
-    def __init__(self, sentence, issue):
-        super().__init__(sentence, issue, 'opposition')
+    def __init__(self, sentence, issue, parties, groupings):
+        super().__init__(sentence, issue, 'opposition', parties, groupings)
 
 
 class AgreementParser(InteractionParser):
@@ -359,8 +384,8 @@ class AgreementParser(InteractionParser):
         }
     ]
 
-    def __init__(self, sentence, issue):
-        super().__init__(sentence, issue, 'agreement')
+    def __init__(self, sentence, issue, parties, groupings):
+        super().__init__(sentence, issue, 'agreement', parties, groupings)
 
     @classmethod
     def collapse(cls, tagged_sentence):
@@ -380,7 +405,7 @@ class AgreementParser(InteractionParser):
 
 class Chunker:
 
-    """A class that enables to define chunk to tag in a tagged sentence."""
+    """A class that chunks specific rules in a tagged sentence."""
 
     def __init__(self, tag, chunk_rules):
         self.tag = tag
@@ -403,8 +428,8 @@ class Chunker:
 
 class InParenthesisChunker(Chunker):
 
-    """Tag patterns "(Country)", corresponding to people from a country
-    being mentionned in the bulletin."""
+    """Chunks "(Country)", corresponding to people from a country being
+    mentionned in the bulletin."""
 
     def __init__(self):
         chunk_rules = [ChunkRule(r'<\(><PAR><\)>', 'In parenthesis')]
@@ -413,8 +438,8 @@ class InParenthesisChunker(Chunker):
 
 class CityChunker(Chunker):
 
-    """Tag patterns "City, Country". This is otherwise identified as an
-    intervention for the country it is obviously not one."""
+    """Chunks "City, Country". This is otherwise identified as an intervention
+    for the country; it is obviously not one."""
 
     def __init__(self):
         chunk_rules = [ChunkRule(r'<NNP><,><PAR>', 'City, Country')]

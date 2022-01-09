@@ -1,26 +1,43 @@
 import re
 from pathlib import Path
 
+from .nlp import WordTokenizer
+
 
 class Entity:
-    def __init__(self, name, alias_of=None):
+
+    """Base class of an Entity (Party or Grouping)."""
+
+    def __init__(self, name, canonical_name=None):
+        """Initializes an entity with its name and a canonical_name.
+
+        If the entity is an alias, the canonical name contains the name of the
+        original entity."""
         self.name = name
-        self.alias_of = alias_of
+        self.canonical_name = (
+            canonical_name if canonical_name is not None else name
+        )
+        # Keep track of the NLTK multi-word expression token for mapping.
+        tokenizer = WordTokenizer([name])
+        self.token = tokenizer.tokenize(name)[0]
 
     def __repr__(self):
-        return self.name
+        return self.canonical_name
 
     def __str__(self):
-        if self.alias_of is not None:
-            return f'{self.name} [{self.alias_of}]'
+        if self.name != self.canonical_name:
+            return f'{self.name} [{self.canonical_name}]'
         else:
             return self.name
 
     def __eq__(self, other):
-        return self.name == other.name and self.alias_of == other.alias_of
+        return (
+            self.name == other.name
+            and self.canonical_name == other.canonical_name
+        )
 
     def __hash__(self):
-        return hash((self.name, self.alias_of))
+        return hash((self.name, self.canonical_name))
 
     @classmethod
     def _parse(cls, path):
@@ -75,22 +92,24 @@ class Entity:
         for variation in variations:
             # Add the variation if it's different from the base entity.
             if variation != entity:
-                result.add(cls(variation, alias_of=entity))
+                result.add(cls(variation, canonical_name=entity))
             # Add the determinant in different cases.
             for the in ['the', 'The', 'THE']:
-                result.add(cls(' '.join([the, variation]), alias_of=entity))
+                result.add(
+                    cls(' '.join([the, variation]), canonical_name=entity)
+                )
         return result
 
 
 class Party(Entity):
-    def __init__(self, name, alias_of=None, member_of=None):
-        super().__init__(name, alias_of)
+    def __init__(self, name, canonical_name=None, member_of=None):
+        super().__init__(name, canonical_name)
         self.member_of = member_of
 
     def __str__(self):
         s = self.name
-        if self.alias_of is not None:
-            s += f': {self.alias_of}'
+        if self.name != self.canonical_name:
+            s += f': {self.canonical_name}'
         if self.member_of is not None:
             s += f' [{", ".join(self.member_of)}]'
         return s
@@ -111,8 +130,8 @@ class Party(Entity):
 
 
 class Grouping(Entity):
-    def __init__(self, name, alias_of=None):
-        super().__init__(name, alias_of)
+    def __init__(self, name, canonical_name=None):
+        super().__init__(name, canonical_name)
 
     @classmethod
     def load(cls, path):

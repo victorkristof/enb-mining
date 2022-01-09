@@ -105,7 +105,9 @@ class InterventionScraper(Scraper):
     def _scrape_from_sentence(self, sentence):
         """Extracts a list of interventions from a sentence."""
         tagged = self.pos_tagger.tag(sentence)
-        parser = InterventionParser(sentence, self.issue)
+        parser = InterventionParser(
+            sentence, self.issue, self.parties, self.groupings
+        )
         return parser.parse(tagged)
 
 
@@ -117,7 +119,7 @@ class InteractionScraper(Scraper):
         """Extracts a list of interactions from a sentence."""
         tagged = self.pos_tagger.tag(sentence)
         interactions = list()
-        for parser in INTERACTION_PARSERS:
-            parser = parser(sentence, self.issue)
+        for Parser in INTERACTION_PARSERS:
+            parser = Parser(sentence, self.issue, self.parties, self.groupings)
             interactions.extend(parser.parse(tagged))
         return interactions
