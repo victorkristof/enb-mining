@@ -1,11 +1,13 @@
 import fire
 from enbmining import Interaction, InteractionScraper
-from enbmining.utils import load_csv, load_entities, load_html, print_progress
+from enbmining.entities import Grouping, Party
+from enbmining.utils import load_csv, load_html, print_progress
 
 
-def main(html_folder, issues_path, entities_path, output_path):
+def main(html_folder, issues_path, parties_path, groupings_path, output_path):
 
-    entities = load_entities(entities_path)
+    parties = Party.load(parties_path)
+    groupings = Grouping.load(groupings_path)
     issues = load_csv(issues_path)
 
     # Extract interactions
@@ -13,12 +15,11 @@ def main(html_folder, issues_path, entities_path, output_path):
     interactions = list()
     for i, issue in enumerate(issues):
         html = load_html(html_folder, issue['id'])
-        scraper = InteractionScraper(html, issue, entities)
+        scraper = InteractionScraper(html, issue, parties, groupings)
         interactions.extend(scraper.scrape())
         print_progress(i, issues, every_n=10)
-    print(
-        f'Extracted {len(interactions)} interactions from {len(issues)} issues'
-    )
+    total = len(interactions)
+    print(f'Extracted {total} interactions from {len(issues)} issues')
 
     # Save interactions.
     Interaction.to_csv(interactions, output_path)
