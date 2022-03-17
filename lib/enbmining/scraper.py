@@ -90,6 +90,8 @@ class Scraper:
         # Rename a.m./p.m. as am/pm.
         text = re.sub(r'a\.m\.', r'am', text)
         text = re.sub(r'p\.m\.', r'pm', text)
+        # Add spacing for "andParty" -> "and Party".
+        text = re.sub(r'(and)([A-Z])', r'\1 \2', text)
         # Normalize spaces.
         text = re.sub(r'\r', ' ', text)
         text = re.sub(r'\n', ' ', text)
