@@ -35,6 +35,7 @@ class InterventionParser(Parser):
         # Preprocess the sentence.
         Processors = [InParenthesisChunker, CityChunker]
         tagged_sentence = self._preprocess(tagged_sentence, Processors)
+        # print(tagged_sentence)
         # Collapse the 'on-behalf' interactions.
         tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
         return self._to_interventions(
@@ -65,6 +66,7 @@ class InteractionParser(Parser):
         # Preprocess the sentence.
         Processors = [CityChunker]
         tagged_sentence = self._preprocess(tagged_sentence, Processors)
+        # print(tagged_sentence)
         # Parse it.
         return flatten(
             [self._parse(cp, tagged_sentence) for cp in self.chunk_parsers]
@@ -222,6 +224,7 @@ class OnBehalfParser(InteractionParser):
     markers = [
         'also on behalf of',
         'on behalf of',
+        'onbehalf of',
         'speaking on behalf of',
         'speaking for',
         'also speaking for',
@@ -231,9 +234,11 @@ class OnBehalfParser(InteractionParser):
     ]
 
     # Match "A, on behalf of B,", where A is a party and B is a grouping.
-    cr = r'<PAR><,><OBH><GRP><,|.>|'
+    cr = r'<PAR><,><OBH><GRP><,|\.>|'
     # Same without the commas.
-    cr += r'<PAR><OBH><GRP>'
+    cr += r'<PAR><OBH><GRP>|'
+    # With parentheses.
+    cr += r'<PAR><\(><OBH><GRP><\)>'
     chunk_rules = [ChunkRule(cr, 'Party on behalf grouping')]
 
     chunk_parsers = [
@@ -246,7 +251,7 @@ class OnBehalfParser(InteractionParser):
     # Match "A, on behalf of B[, C, and D],", using the first and last comma as
     # delimiter for the list of entities being represented. In this case,
     # a grouping can never appear on the right side of the regex.
-    cr = r'<PAR><,><OBH>((<PAR><,>)*<PAR><CC><PAR>|<PAR><,|.>)'
+    cr = r'<PAR><,|\(><OBH>((<PAR><,>)*<PAR><CC><PAR>|<PAR><,|\.|\)>)'
     chunk_rules = [ChunkRule(cr, 'Party on behalf other parties')]
     chunk_parsers.append(
         {
