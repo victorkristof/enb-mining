@@ -1,5 +1,5 @@
 ABU: Argentina, Brazil and Uruguay; Argentina, Brazil, and Uruguay
-African Group: Africa Group
+African Group: Africa Group, African States
 AILAC: Independent Alliance of Latin America and the Caribbean, Independent Association of Latin America and the Caribbean
 ALBA: Bolivarian Alliance for the Peoples of our America, Bolivarian Alliance for the Peoples of Our America
 AOSIS: Alliance of Small Island States
@@ -23,7 +23,7 @@ EIT: Economies in Transition, EITs, economies in transition, Economies in transi
 EU: European Union
 G-77/China: G77, G-77, G-77 and China, G-77/ China, G-77/China, G77 and China, G77-China, G77/China, Group of 77 and China, Group of 77
 Group of Nine
-GRULAC: Group of Latin American and Caribbean Countries, Group of Latin American and Caribbean Countries (GRULAC), Group of Latin American and Caribbean countries
+GRULAC: Group of Latin American and Caribbean Countries, Group of Latin American and Caribbean Countries (GRULAC), Group of Latin American and Caribbean countries, Latin American and Caribbean Group”
 HAC: High Ambition Coalition
 Indigenous Caucus
 JUSCANZ
@@ -37,5 +37,6 @@ SADC: Southern African Development Community, Southern African Development Commu
 SICA: Central American Integration System
 SIDS: Small Island Developing States, Small Island Developing States (SIDS), small island developing states, small island developing states (SIDS), small islands developing States (SIDS)
 UG: Umbrella Group
+Valdivia Group
 Visegrad Group
 WEOG: Western Europe and Others
