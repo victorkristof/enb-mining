@@ -93,6 +93,8 @@ class Scraper:
         # Add spacing for "andParty" -> "and Party".
         text = re.sub(r'(and)([A-Z])', r'\1 \2', text)
         text = re.sub(r'77and', r'77 and', text)
+        # Normalize US$ to prevent parsing interventions for US.
+        text = re.sub(r'US\$', '$', text)
         # Normalize spaces.
         text = re.sub(r'\r', ' ', text)
         text = re.sub(r'\n', ' ', text)
