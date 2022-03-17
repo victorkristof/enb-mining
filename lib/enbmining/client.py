@@ -95,7 +95,7 @@ class Client:
         elif title == 'Summary report':
             return 'summary'
         elif title == 'Curtain raiser':
-            return 'first'
+            return 'curtain-raiser'
         return None
 
     def _get_issue_date(self, section):
