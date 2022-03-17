@@ -49,7 +49,7 @@ class Scraper:
         sentences = list()
         for paragraph in paragraphs:
             text = paragraph.get_text()
-            text = self._clean(text)
+            text = self._normalize(text)
             sentences.extend(tokenizer.tokenize(text))
 
         return sentences
@@ -81,25 +81,36 @@ class Scraper:
                     paragraphs.append(node)
         return paragraphs
 
-    def _clean(self, text):
-        # Remove exclamation marks from names (for sentence tokenizer).
-        text = re.sub(r'(Climate Justice Now)!', r'\1', text)
-        text = re.sub(r'(CLIMATE JUSTICE NOW)!', r'\1', text)
-        text = re.sub(r'(CJN)!', r'\1', text)
-        text = re.sub(r'(ACT)!', r'\1', text)
+    def _normalize(self, text):
+        """Normalizes a sentence before it gets tokenized.
+
+        This improves the format of the sentence, so it can be saved as is."""
         # Rename a.m./p.m. as am/pm.
         text = re.sub(r'a\.m\.', r'am', text)
         text = re.sub(r'p\.m\.', r'pm', text)
         # Add spacing for "andParty" -> "and Party".
         text = re.sub(r'(and)([A-Z])', r'\1 \2', text)
         text = re.sub(r'77and', r'77 and', text)
-        # Normalize US$ to prevent parsing interventions for US.
-        text = re.sub(r'US\$', '$', text)
         # Normalize spaces.
         text = re.sub(r'\r', ' ', text)
         text = re.sub(r'\n', ' ', text)
         text = re.sub(r'\xa0+', ' ', text, flags=re.UNICODE)
         text = re.sub(r'\s\s+', ' ', text)
+        return text
+
+    def _preprocess(self, text):
+        """Prepocesses a sentence before it gets tagged.
+
+        This changes the sentence, so it should not be saved in this format."""
+        # Remove exclamation marks from names (for sentence tokenizer).
+        text = re.sub(r'(Climate Justice Now)!', r'\1', text)
+        text = re.sub(r'(CLIMATE JUSTICE NOW)!', r'\1', text)
+        text = re.sub(r'(CJN)!', r'\1', text)
+        text = re.sub(r'(ACT)!', r'\1', text)
+        # Normalize US$ to prevent parsing interventions for US.
+        text = re.sub(r'US\$', '$', text)
+        # Normalize QELROS so that it's not matched as a city.
+        text = re.sub(r'QELRO[Ss]', 'qelros', text)
         return text
 
 
@@ -109,10 +120,10 @@ class InterventionScraper(Scraper):
 
     def _scrape_from_sentence(self, sentence):
         """Extracts a list of interventions from a sentence."""
-        tagged = self.pos_tagger.tag(sentence)
         parser = InterventionParser(
             sentence, self.issue, self.parties, self.groupings
         )
+        tagged = self.pos_tagger.tag(self._preprocess(sentence))
         return parser.parse(tagged)
 
 
@@ -122,7 +133,7 @@ class InteractionScraper(Scraper):
 
     def _scrape_from_sentence(self, sentence):
         """Extracts a list of interactions from a sentence."""
-        tagged = self.pos_tagger.tag(sentence)
+        tagged = self.pos_tagger.tag(self._preprocess(sentence))
         interactions = list()
         for Parser in INTERACTION_PARSERS:
             parser = Parser(sentence, self.issue, self.parties, self.groupings)
