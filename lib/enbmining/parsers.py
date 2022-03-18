@@ -354,6 +354,7 @@ class OppositionParser(InteractionParser):
     markers = [
         'Opposed by',
         'opposed by',
+        'and opposed by',
     ]
 
     # Match "A opposed by B[, C, and D]" and similar.
@@ -391,7 +392,8 @@ class AgreementParser(InteractionParser):
     # but it will necessarily by terminated by "and ENTITY".
     chunk_rules = [
         ChunkRule(
-            r'((<PAR|GRP><,>?)*<PAR|GRP><,>?<CC><PAR|GRP><,>?)+', 'Aggreement'
+            r'((<PAR|GRP><,>?)*<PAR|GRP><,>?<CC|IN><PAR|GRP><,>?)+',
+            'Aggreement',
         )
     ]
     chunk_parsers = [
