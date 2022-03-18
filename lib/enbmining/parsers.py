@@ -281,7 +281,12 @@ class OnBehalfParser(InteractionParser):
             # the right-side of the interaction, i.e., the entities that are
             # being represented by one other entity.
             index = cls.index_of('OBH', subtree)
-            return subtree[index + 1 :]
+            # Remove the trailing parenthesis if it exists.
+            return [
+                (token, tag)
+                for token, tag in subtree[index + 1 :]
+                if tag != ')'
+            ]
 
         # The first parser matches parties on behalf of groupings.
         parser = cls.chunk_parsers[0]['parser']
@@ -290,11 +295,17 @@ class OnBehalfParser(InteractionParser):
     @classmethod
     def _collapse_party_obh_parties(cls, tagged_sentence):
         def collapse_func(subtree):
-            # We find the index of the OBG tag and remove it from the subtree
+            # We find the index of the OBH tag and remove it from the subtree
             # to join the party on the left-side with the ones on the
             # right-side.
             index = cls.index_of('OBH', subtree)
-            return subtree[:index] + subtree[index + 1 :]
+            subtree = subtree[:index] + subtree[index + 1 :]
+            # Remove the trailing parenthesis if it exists.
+            return [
+                (token, tag)
+                for token, tag in subtree[index + 1 :]
+                if tag != ')'
+            ]
 
         # The second parser matches parties on behalf of other parties.
         parser = cls.chunk_parsers[1]['parser']
