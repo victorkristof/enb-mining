@@ -102,6 +102,11 @@ class POSTagger:
             for parser in PARSERS
             for marker in parser.markers
         }
+        # Add custom tags for specific words.
+        model |= {'and': 'AND'}
+        model |= {'with': 'WITH'}
+        # model |= {'but': 'BUT'}
+        # model |= {'while': 'WHILE'}
         return model
 
     def _retag_with_model(self, tagged):

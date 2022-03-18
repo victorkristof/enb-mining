@@ -252,7 +252,7 @@ class OnBehalfParser(InteractionParser):
     # Match "A, on behalf of B[, C, and D],", using the first and last comma as
     # delimiter for the list of entities being represented. In this case,
     # a grouping can never appear on the right side of the regex.
-    cr = r'<PAR><,|\(><OBH>((<PAR><,>)*<PAR><CC><PAR>|<PAR><,|\.|\)>)'
+    cr = r'<PAR><,|\(><OBH>((<PAR><,>)*<PAR><AND><PAR>|<PAR><,|\.|\)>)'
     chunk_rules = [ChunkRule(cr, 'Party on behalf other parties')]
     chunk_parsers.append(
         {
@@ -392,7 +392,7 @@ class AgreementParser(InteractionParser):
     # but it will necessarily by terminated by "and ENTITY".
     chunk_rules = [
         ChunkRule(
-            r'((<PAR|GRP><,>?)*<PAR|GRP><,>?<CC|IN><PAR|GRP><,>?)+',
+            r'((<PAR|GRP><,>?)*<PAR|GRP><,>?<AND|WITH><PAR|GRP><,>?)+',
             'Aggreement',
         )
     ]
