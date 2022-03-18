@@ -6,11 +6,11 @@ AOSIS: Alliance of Small Island States
 APEC: Asia Pacific Economic Cooperation
 Arab Group: Arabian Countries Group
 BASIC: Brazil, South Africa, India and China; Brazil, South Africa, India, and China; BASIC (Brazil, South Africa, India and China); BASIC (Brazil, South Africa, India, and China); BASIC group (Brazil, South Africa, India and China)
-CACAM: Albania and Moldova, Albania and Moldova Group, CAC&M
+CACAM: Albania and Moldova, Albania and Moldova Group, CAC&M, CACAM group
 CARICOM: Caribbean Community
 Cartagena Dialogue
 Central American Group: Central American States
-Central Group
+Central Group: CENTRAL GROUP 11, Central Group of Eleven (CG-11)
 CfRN: Coalition for Rainforest Nations
 CG-11: Central Group Eleven, Central Group 11
 Climate Alliance
@@ -18,16 +18,16 @@ Climate Group
 COMIFAC: Central Africa Forests Commission, Central Africa Forests Commission (COMIFAC), Central Africa Forestry Commission
 Congo Basin Countries
 CVF: Climate Vulnerable Forum
-EIG: Environmental Integrity Group
+EIG: Environmental Integrity Group, Environmental Integrity Group (Switzerland, Republic of Korea and Mexico), Environmental Integrity Group (a coalition of countries including Switzerland, Mexico and the Republic of Korea)
 EIT: Economies in Transition, EITs, economies in transition, Economies in transition
 EU: European Union
-G-77/China: G77, G-77, G-77 and China, G-77/ China, G-77/China, G77 and China, G77-China, G77/China, Group of 77 and China, Group of 77
+G-77/China: G77, G-77, G-77 and China, G-77/ China, G-77/ CHINA, G-77/China, G77 and China, G77-China, G77/China, Group of 77 and China, Group of 77
 Group of Nine
 GRULAC: Group of Latin American and Caribbean Countries, Group of Latin American and Caribbean Countries (GRULAC), Group of Latin American and Caribbean countries, Latin American and Caribbean Group”
 HAC: High Ambition Coalition
 Indigenous Caucus
 JUSCANZ
-LDCs: Least Developed Countries, LDC Group
+LDCs: Least Developed Countries, LDC Group, LDC GROUP, Least Developed Countries (LDCs) group
 League of Arab States
 LMDCs: Like-Minded Developing Countries, LMDC, Like-Minded Developing Countries (LMDCs), Like-Minded Developing Countries (LMDC), Like Minded Developing Countries, Like Minded Developing Countries (LMDCs), Like Minded Developing Countries (LMDC), Like-minded Developing Countries, Like minded Developing Countries (LMDCs), Like minded Developing Countries (LMDC)
 Mountain Landlocked Developing Countries: Mountainous Landlocked Developing Countries, Landlocked Mountainous Developing Countries
@@ -36,7 +36,7 @@ OPEC
 SADC: Southern African Development Community, Southern African Development Community (SADC)
 SICA: Central American Integration System
 SIDS: Small Island Developing States, Small Island Developing States (SIDS), small island developing states, small island developing states (SIDS), small islands developing States (SIDS)
-UG: Umbrella Group
+UG: Umbrella Group, Umbrella Group (a fluid grouping of non-EU Annex I countries)
 Valdivia Group
-Visegrad Group
+Visegrad Group: VISEGRAD Group of central European countries
 WEOG: Western Europe and Others
