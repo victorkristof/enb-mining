@@ -17,10 +17,13 @@ html = load_html(html_folder, issue['id'])
 # %% Test "on behalf".
 scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
-    'Switzerland, for the EIG, proposed X.',
-    'Switzerland for the EIG proposed X.',
-    'Switzerland, for Canada, proposed X.',
-    'Switzerland, on behalf of Canada, proposed',
+    # 'Switzerland, for the EIG, proposed X.',
+    # 'Switzerland for the EIG proposed X.',
+    # 'Switzerland, for Canada, proposed X.',
+    # 'Switzerland, on behalf of Canada, proposed',
+    # 'Switzerland, onbehalf of Canada, proposed',
+    'Switzerland, on behalf of Canada.',
+    'Switzerland (on behalf of Canada)',
 ]
 for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
@@ -101,6 +104,25 @@ interactions = scraper._scrape_from_sentence(complex_sentence)
 for interaction in interactions:
     print(repr(interaction))
 
+# %% Test with a complex sentence.
+scraper = InteractionScraper(html, issue, parties, groupings)
+complex_sentence = '''Sweden, for the EU, supported by JAPAN, COLOMBIA,\
+ CANADA, the MARSHALL ISLANDS, ICELAND, AUSTRALIA, GUYANA and many others,\
+ supported establishing a “friends of the chair” group.'''
+interactions = scraper._scrape_from_sentence(complex_sentence)
+for interaction in interactions:
+    print(repr(interaction))
+
+# %% Test interactions.
+scraper = InteractionScraper(html, issue, parties, groupings)
+complex_sentence = 'JAPAN, also on behalf CANADA, the RUSSIAN FEDERATION and AUSTRALIA, put forward a proposal for a draft COP decision expressly deferring the issue of the nature of the consequences to COP/MOP-1.'
+complex_sentence = scraper._normalize(complex_sentence)
+interactions = scraper._scrape_from_sentence(complex_sentence)
+for interaction in interactions:
+    # if interaction.type != 'agreement':
+    #     print(repr(interaction))
+    print(repr(interaction))
+
 # %% Test intervention.
 scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = '''26th BASIC Ministerial Meeting: BASIC (Brazil, South Africa,\
@@ -117,5 +139,20 @@ scraper._scrape_from_sentence(sentence)
 
 # %% Test intervention.
 scraper = InterventionScraper(html, issue, parties, groupings)
-sentence = 'Senegal, for Zaire and Mauritania, agreed, noting that'
+sentence = 'Senegal, for Zaire and Mauritania agreed, noting that'
+scraper._scrape_from_sentence(sentence)
+
+# %% Test intervention.
+scraper = InterventionScraper(html, issue, parties, groupings)
+sentence = 'at the request of INDONESIA, on behalf of the G-77/China.'
+scraper._scrape_from_sentence(sentence)
+
+# %% Test intervention.
+scraper = InterventionScraper(html, issue, parties, groupings)
+sentence = 'Bangladesh, on behalf of the LDC GROUP, said they saw'
+scraper._scrape_from_sentence(sentence)
+
+# %% Test intervention.
+scraper = InterventionScraper(html, issue, parties, groupings)
+sentence = 'Tanzania, on behalf of the G-77/China, along with the US and Romania, speaking for the economies in transition, expressed concerns at insufficient information provided for the comprehensive review of the implementation of the framework for capacity building in developing countries, and for the compilation and synthesis of capacity-building activities in economies in transition (EITs).'
 scraper._scrape_from_sentence(sentence)
