@@ -92,8 +92,9 @@ class Scraper:
         text = re.sub(r'(and)([A-Z])', r'\1 \2', text)
         text = re.sub(r'77and', r'77 and', text)
         # Add spacing before parenthesis.
-        text = 'France(on behalf)'
         text = re.sub(r'(\w)\(', r'\1 (', text)
+        # Add spacing before dot.
+        text = re.sub(r'\.([A-Z])', r'. \1', text)
         # Normalize spaces.
         text = re.sub(r'\r', ' ', text)
         text = re.sub(r'\n', ' ', text)
