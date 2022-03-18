@@ -232,6 +232,7 @@ class OnBehalfParser(InteractionParser):
         'for a number of members of',
         'onbehalf of',  # Missing space due to PDF extraction by ENB.
         'of behalf of',  # Typo by ENB staff.
+        'also on behalf',  # Typo by ENB staff ("of" missing).
     ]
 
     # Match "A, on behalf of B,", where A is a party and B is a grouping.
