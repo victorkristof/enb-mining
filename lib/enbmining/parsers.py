@@ -393,7 +393,7 @@ class AgreementParser(InteractionParser):
     # but it will necessarily by terminated by "and ENTITY".
     chunk_rules = [
         ChunkRule(
-            r'((<PAR|GRP><,>?)*<PAR|GRP><,>?<AND|WITH><PAR|GRP><,>?)+',
+            r'((<PAR|GRP><,>?)*<PAR|GRP><,>?<AND|WITH>?<PAR|GRP><,>?)+',
             'Aggreement',
         )
     ]
