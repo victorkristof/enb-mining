@@ -224,13 +224,14 @@ class OnBehalfParser(InteractionParser):
     markers = [
         'also on behalf of',
         'on behalf of',
-        'onbehalf of',
         'speaking on behalf of',
         'speaking for',
         'also speaking for',
         'for',
         'for several',
         'for a number of members of',
+        'onbehalf of',  # Missing space due to PDF extraction by ENB.
+        'of behalf of',  # Typo by ENB staff.
     ]
 
     # Match "A, on behalf of B,", where A is a party and B is a grouping.
