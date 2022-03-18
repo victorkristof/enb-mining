@@ -32,7 +32,8 @@ class Intervention(Data):
         return ' '.join(
             [
                 'Intervention by',
-                repr(self.entity),
+                self.entity.canonical_name,
+                f'(as "{self.entity.name}")',
                 f'on {self.date}:',
                 f'"{self.sentence}"',
                 f'(Issue {self.issue_id})',
@@ -41,6 +42,26 @@ class Intervention(Data):
 
     def __repr__(self):
         return repr(self.entity)
+
+    def __hash__(self):
+        return hash(
+            (
+                self.entity.canonical_name,
+                self.sentence,
+                self.date,
+                self.issue_id,
+            )
+        )
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return NotImplemented
+        return (
+            self.entity.canonical_name == other.entity.canonical_name
+            and self.sentence == other.sentence
+            and self.date == other.date
+            and self.issue_id == other.issue_id
+        )
 
 
 class Interaction(Data):

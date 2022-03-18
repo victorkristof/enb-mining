@@ -16,7 +16,8 @@ def main(html_folder, issues_path, parties_path, groupings_path, output_path):
     for i, issue in enumerate(issues):
         html = load_html(html_folder, issue['id'])
         scraper = InterventionScraper(html, issue, parties, groupings)
-        interventions.extend(scraper.scrape())
+        # Keep only unique interventions.
+        interventions.extend(set(scraper.scrape()))
         print_progress(i, issues, every_n=10)
     total = len(interventions)
     print(f'Extracted {total} interventions from {len(issues)} issues')
