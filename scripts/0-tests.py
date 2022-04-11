@@ -158,4 +158,5 @@ scraper._scrape_from_sentence(sentence)
 # %% Test intervention.
 scraper = InterventionScraper(html, issue, parties, groupings)
 sentence = 'Tanzania, on behalf of the G-77/China, along with the US and Romania, speaking for the economies in transition, expressed concerns at insufficient information provided for the comprehensive review of the implementation of the framework for capacity building in developing countries, and for the compilation and synthesis of capacity-building activities in economies in transition (EITs).'
-scraper._scrape_from_sentence(sentence)
+print(scraper._scrape_from_sentence(sentence))
+print(set(scraper._scrape_from_sentence(sentence)))
