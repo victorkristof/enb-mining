@@ -35,7 +35,6 @@ class InterventionParser(Parser):
         # Preprocess the sentence.
         Processors = [InParenthesisChunker, CityChunker]
         tagged_sentence = self._preprocess(tagged_sentence, Processors)
-        # print(tagged_sentence)
         # Collapse the 'on-behalf' interactions.
         tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
         return self._to_interventions(
@@ -66,7 +65,6 @@ class InteractionParser(Parser):
         # Preprocess the sentence.
         Processors = [CityChunker]
         tagged_sentence = self._preprocess(tagged_sentence, Processors)
-        # print(tagged_sentence)
         # Parse it.
         return flatten(
             [self._parse(cp, tagged_sentence) for cp in self.chunk_parsers]
@@ -84,8 +82,12 @@ class InteractionParser(Parser):
         # If an aggregator is not specified, we ignore the parser.
         if aggregator is None:
             return list()
+        if self.type == 'agreement':
+            tagged_sentence = OnBehalfParser.collapse(
+                tagged_sentence, groupings=True, parties=False
+            )
         # Collapse the 'on-behalf' interactions if it's not one.
-        if self.type != 'on-behalf':
+        elif self.type != 'on-behalf':
             tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
             # Collapse the 'agreement' interactions if it's not one (depends on
             # the collapse of 'on-behalf' interactions, so it comes after).
@@ -266,13 +268,18 @@ class OnBehalfParser(InteractionParser):
         super().__init__(sentence, issue, 'on-behalf', parties, groupings)
 
     @classmethod
-    def collapse(cls, tagged_sentence):
-        # First, collapse the case where a party represents a grouping (keep
-        # the grouping only).
-        tagged_sentence = cls._collapse_party_obh_grouping(tagged_sentence)
-        # Second, collapse the case where a party represents other parties
-        # (keep all the parties, including the one representing the others).
-        tagged_sentence = cls._collapse_party_obh_parties(tagged_sentence)
+    def collapse(cls, tagged_sentence, groupings=True, parties=True):
+        if groupings:
+            # First, collapse the case where a party represents a grouping
+            # (keep the grouping only).
+            tagged_sentence = cls._collapse_party_obh_grouping(tagged_sentence)
+            # print('After collapse grouping:', tagged_sentence)
+        if parties:
+            # Second, collapse the case where a party represents other parties
+            # (keep all the parties, including the one representing the
+            # others).
+            tagged_sentence = cls._collapse_party_obh_parties(tagged_sentence)
+            # print('After collapse parties: ', tagged_sentence)
         return tagged_sentence
 
     @classmethod
