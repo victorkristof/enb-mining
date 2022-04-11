@@ -17,13 +17,14 @@ html = load_html(html_folder, issue['id'])
 # %% Test "on behalf".
 scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [
-    # 'Switzerland, for the EIG, proposed X.',
-    # 'Switzerland for the EIG proposed X.',
-    # 'Switzerland, for Canada, proposed X.',
-    # 'Switzerland, on behalf of Canada, proposed',
-    # 'Switzerland, onbehalf of Canada, proposed',
+    'Switzerland, for the EIG, proposed X.',
+    'Switzerland for the EIG proposed X.',
+    'Switzerland, for Canada, proposed X.',
+    'Switzerland, on behalf of Canada, proposed',
+    'Switzerland, onbehalf of Canada, proposed',
     'Switzerland, on behalf of Canada.',
-    'Switzerland (on behalf of Canada)',
+    'Switzerland, on behalf of Canada, Japan and Mexico',
+    'Switzerland (on behalf of Canada) said that',
 ]
 for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
@@ -38,6 +39,8 @@ sentences = [
     'Switzerland, for the EIG, and the EU regretted lack of',
     'Switzerland, for the EIG, CANADA and AUSTRALIA, regretted',
     'Switzerland, for the EIG, CANADA and AUSTRALIA, and the EU regretted',
+    'Switzerland, for CANADA and AUSTRALIA, and the EU regretted',
+    'Switzerland, for Canada, and the EU regretted',
 ]
 for sentence in sentences:
     print(scraper._scrape_from_sentence(sentence))
