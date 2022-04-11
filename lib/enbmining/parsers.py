@@ -302,11 +302,7 @@ class OnBehalfParser(InteractionParser):
             index = cls.index_of('OBH', subtree)
             subtree = subtree[:index] + subtree[index + 1 :]
             # Remove the trailing parenthesis if it exists.
-            return [
-                (token, tag)
-                for token, tag in subtree[index + 1 :]
-                if tag != ')'
-            ]
+            return [(token, tag) for token, tag in subtree if tag != ')']
 
         # The second parser matches parties on behalf of other parties.
         parser = cls.chunk_parsers[1]['parser']
