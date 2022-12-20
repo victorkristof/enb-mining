@@ -145,7 +145,7 @@ class InteractionParser(Parser):
     def markedsubtree2interactions(self, subtree, inverse=False):
         """Converts a subtree with a marker into a list of interactions.
 
-        A marker is a specific tag that splits the sentence in to two, e.g.,
+        A marker is a specific tag that splits the sentence into two, e.g.,
         "A on behalf of B". The marker is "on behalf of" as it splits the
         sentence into two parts. Depending on the interaction, the order of
         A and B might be `inversed` (e.g, "A for B" and "B supported by A")"""
@@ -160,9 +160,7 @@ class InteractionParser(Parser):
         # And keep only the tokens, not the tags, and get the Entity
         # corresponding to the token.
         left = [self._token2entity[token] for token, _ in subtree[:index]]
-        right = [
-            self._token2entity[token] for token, _ in subtree[index + 1 :]
-        ]
+        right = [self._token2entity[token] for token, _ in subtree[index + 1 :]]
         # Return instances of Interactions.
         if inverse:
             return [
@@ -334,13 +332,11 @@ class SupportParser(InteractionParser):
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
             'aggregator': 'markedsubtree2interactions',
-            'args': {'inverse': True},  # Inverse entites A and B.
+            'args': {'inverse': True},  # Inverse entities A and B.
         }
     ]
     # Match "Supported by B[,C, and D], A".
-    chunk_rules = [
-        ChunkRule(r'^<SUP>(<AGR>|<PAR|GRP><,>)<PAR|GRP>', 'Support')
-    ]
+    chunk_rules = [ChunkRule(r'^<SUP>(<AGR>|<PAR|GRP><,>)<PAR|GRP>', 'Support')]
     chunk_parsers.append(
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
@@ -369,7 +365,7 @@ class OppositionParser(InteractionParser):
         {
             'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
             'aggregator': 'markedsubtree2interactions',
-            'args': {'inverse': True},  # Inverse entites A and B.
+            'args': {'inverse': True},  # Inverse entities A and B.
         }
     ]
     # Match "Opposed by B[,C, and D], A".
@@ -392,8 +388,8 @@ class AgreementParser(InteractionParser):
     tag = 'AGR'
     markers = list()  # No markers for agreements.
 
-    # Match a list of entities, where multiple "and"'s can appear in the list,
-    # but it will necessarily by terminated by "and ENTITY".
+    # Match a list of entities, where multiple "and" or "with" can appear in the
+    # list.
     chunk_rules = [
         ChunkRule(
             r'((<PAR|GRP><,>?)*<PAR|GRP><,>?<AND|WITH>?<PAR|GRP><,>?)+',
@@ -414,9 +410,7 @@ class AgreementParser(InteractionParser):
     def collapse(cls, tagged_sentence):
         def collapse_func(subtree):
             # Keep only the entities.
-            entities = [
-                (token, tag) for token, tag in subtree if tag in ENTITY
-            ]
+            entities = [(token, tag) for token, tag in subtree if tag in ENTITY]
             # Create new node whose tag is "AGR" and whose token is the list of
             # entities.
             return [(entities, cls.tag)]

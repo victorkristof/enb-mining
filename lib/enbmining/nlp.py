@@ -2,8 +2,7 @@ from itertools import chain
 
 import nltk
 
-from .parsers import (AgreementParser, OnBehalfParser, OppositionParser,
-                      SupportParser)
+from .parsers import AgreementParser, OnBehalfParser, OppositionParser, SupportParser
 
 ABBREV = set(
     [
@@ -36,6 +35,7 @@ class SentenceTokenizer:
 
     def __init__(self):
         sentence_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+        # Add abbreviations found in ENB texts to improve sentence tokenization.
         sentence_tokenizer._params.abbrev_types.update(ABBREV)
         self.tokenizer = sentence_tokenizer
 
@@ -75,9 +75,7 @@ class InteractionTokenizer:
 
     def __init__(self, parties, groupings):
         markers = [mk for parser in PARSERS for mk in parser.markers]
-        self.tokenizer = WordTokenizer(
-            list(chain(parties, groupings, markers))
-        )
+        self.tokenizer = WordTokenizer(list(chain(parties, groupings, markers)))
 
     def tokenize(self, text):
         return self.tokenizer.tokenize(text)
