@@ -14,14 +14,33 @@ class Client:
         self.negotiation = NEGOTIATIONS[negotiation]
         self.debug = debug
 
-    def get_issues_metadata(self, start_page, end_page):
+    def get_issues_metadata(self, start_page, end_page, missing_meetings=[]):
         issues = list()
+        # Scrape issues from list of all meetings.
         for page_number in range(start_page - 1, end_page):  # Offset index.
             if self.debug:
-                print(f'Scraping page {page_number+1}')
+                print(f'Scraping page {page_number+1}...')
             issues.extend(self._scrape_issues_from_meetings(page_number))
             time.sleep(1)
+        # Scrape missing meetings.
+        if self.debug and len(missing_meetings) > 0:
+            print('Scraping missing meetings...')
+        for meeting in missing_meetings:
+            issues.extend(self._scrape_missing_meeting(meeting))
+        # Assign IDs in chronological orders (doesn't work with missing
+        # meetings)
         issues = self._assign_ids(issues)
+        return issues
+
+    def _scrape_missing_meeting(self, meeting):
+        issues = list()
+        issue_details = self._scrape_issues(meeting['url'])
+        for issue in issue_details:
+            issue |= {
+                'meeting': meeting['meeting'],
+                'meeting_date': meeting['meeting_date'],
+            }
+            issues.append(issue)
         return issues
 
     def _scrape_issues_from_meetings(self, page_number):
@@ -90,7 +109,7 @@ class Client:
             'span',
             class_='o-accordion-item__title o-accordion-item__title--no-date',
         ).get_text()
-        if title == 'Report of main proceedings':
+        if title == 'Report of main proceedings' or title == 'Daily report':
             return 'issue'
         elif title == 'Summary report':
             return 'summary'
