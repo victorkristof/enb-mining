@@ -26,8 +26,8 @@ def save_html(content, path):
         f.write(content)
 
 
-def main(input_path, html_folder, debug=False):
-    issues = load_csv(input_path)
+def main(issues_path, html_folder, debug=False):
+    issues = load_csv(issues_path)
 
     for issue in issues:
         path = str(html_folder / Path(issue['id'] + '.html'))
