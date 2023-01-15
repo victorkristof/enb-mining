@@ -2,7 +2,13 @@ from itertools import chain
 
 import nltk
 
-from .parsers import AgreementParser, OnBehalfParser, OppositionParser, SupportParser
+from .parsers import (
+    AgreementParser,
+    OnBehalfParser,
+    OppositionParser,
+    SupportParser,
+    WhileOppositionParser,
+)
 
 ABBREV = set(
     [
@@ -25,6 +31,7 @@ PARSERS = [
     OnBehalfParser,
     SupportParser,
     OppositionParser,
+    WhileOppositionParser,
     AgreementParser,
 ]
 
@@ -105,6 +112,7 @@ class POSTagger:
         model |= {'with': 'WITH'}
         # model |= {'but': 'BUT'}
         # model |= {'while': 'WHILE'}
+        # model |= {'whereas': 'WHEREAS'}
         return model
 
     def _retag_with_model(self, tagged):

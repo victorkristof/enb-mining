@@ -3,14 +3,21 @@ import re
 from bs4 import BeautifulSoup, Tag
 
 from .nlp import POSTagger, SentenceTokenizer
-from .parsers import (AgreementParser, InterventionParser, OnBehalfParser,
-                      OppositionParser, SupportParser)
+from .parsers import (
+    AgreementParser,
+    InterventionParser,
+    OnBehalfParser,
+    OppositionParser,
+    SupportParser,
+    WhileOppositionParser,
+)
 from .utils import flatten
 
 INTERACTION_PARSERS = [
     OnBehalfParser,
     SupportParser,
     OppositionParser,
+    WhileOppositionParser,
     AgreementParser,
 ]
 

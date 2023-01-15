@@ -14,6 +14,21 @@ issues = load_csv(issues_path)
 issue = issues[0]
 html = load_html(html_folder, issue['id'])
 
+# %% Test new structure of oppositions.
+scraper = InteractionScraper(html, issue, parties, groupings)
+# complex_sentence = 'AUSTRALIA and JAPAN stated that its form should follow itscontent, while the RUSSIAN FEDERATION, CHINA, BANGLADESH, MARSHALLISLANDS and MEXICO preferred a separate protocol.'
+complex_sentence = 'CHINA, with SAUDI ARABIA and JAMAICA, proposed removing a paragraph inviting the Montreal Protocol to make a statement at a future session of SBSTA, while the EU, NORWAY and SENEGAL supported retaining it.'
+complex_sentence = 'The US, supported by the EU, AUSTRALIA, SWITZERLAND, CANADA, NEW ZEALAND, NORWAY and ISRAEL, opposed consideration of this issue, whereas VENEZUELA, INDIA, CUBA, CHINA, BOLIVIA and SAUDI ARABIA supported it.'
+complex_sentence = 'Australia added that the commitments do not deal with the post-2000 period and applyonly to Annex I Parties, but Malaysia, Brazil, Argentina, US, the EU and Nauru disagreed'
+complex_sentence = 'CHINA highlighted common but differentiated responsibilities, while NEW ZEALAND and Pettersen called for a global approach to maritime and aviation emissions.'
+complex_sentence = 'Norway, supported by Australia and the EU, but opposed by Brazil, China, India and Kenya, suggested common accounting rules for all parties'
+complex_sentence = scraper._normalize(complex_sentence)
+interactions = scraper._scrape_from_sentence(complex_sentence)
+for interaction in interactions:
+    # if interaction.type != 'agreement':
+    #     print(repr(interaction))
+    print(repr(interaction))
+
 # %% Test "on behalf".
 scraper = InteractionScraper(html, issue, parties, groupings)
 sentences = [

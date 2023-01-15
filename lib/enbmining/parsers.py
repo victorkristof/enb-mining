@@ -89,10 +89,9 @@ class InteractionParser(Parser):
         # Collapse the 'on-behalf' interactions if it's not one.
         elif self.type != 'on-behalf':
             tagged_sentence = OnBehalfParser.collapse(tagged_sentence)
-            # Collapse the 'agreement' interactions if it's not one (depends on
-            # the collapse of 'on-behalf' interactions, so it comes after).
-            if self.type != 'agreement':
-                tagged_sentence = AgreementParser.collapse(tagged_sentence)
+            # Collapse the 'agreement' interactions (depends on the collapse of
+            # 'on-behalf' interactions, so it comes after).
+            tagged_sentence = AgreementParser.collapse(tagged_sentence)
 
         tree = chunk_parser.parse(tagged_sentence)
         interactions = list()
@@ -379,6 +378,34 @@ class OppositionParser(InteractionParser):
             'aggregator': 'inversedsubtree2interactions',
         }
     )
+
+    def __init__(self, sentence, issue, parties, groupings):
+        super().__init__(sentence, issue, 'opposition', parties, groupings)
+
+
+class WhileOppositionParser(InteractionParser):
+
+    """A parser that handles cases where the opposition marker is not right next
+    to the party/groupings/agreement markers, for example "A said this, while
+    B said that"."""
+
+    tag = 'WOPP'
+    markers = ['while', 'whereas']
+
+    # Match "A[, B, and C] ... while D[,E, and F] ..."
+    chunk_rules = [
+        ChunkRule(
+            r'(<PAR|GRP>|<AGR>)<.*>*?<,><WOPP>(<PAR|GRP>|<AGR>)',
+            'While opposition',
+        )
+    ]
+    chunk_parsers = [
+        {
+            'parser': RegexpChunkParser(chunk_rules, chunk_label=tag),
+            'aggregator': 'markedsubtree2interactions',
+            'args': {'inverse': True},  # Inverse entities A and B.
+        }
+    ]
 
     def __init__(self, sentence, issue, parties, groupings):
         super().__init__(sentence, issue, 'opposition', parties, groupings)
