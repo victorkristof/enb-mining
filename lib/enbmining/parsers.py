@@ -355,6 +355,7 @@ class OppositionParser(InteractionParser):
         'Opposed by',
         'opposed by',
         'and opposed by',
+        'but opposed by',
     ]
 
     # Match "A opposed by B[, C, and D]" and similar.
