@@ -9,9 +9,9 @@ BASIC: Brazil, South Africa, India and China; Brazil, South Africa, India, and C
 CACAM: Albania and Moldova, Albania and Moldova Group, CAC&M, CACAM group
 CARICOM: Caribbean Community
 Cartagena Dialogue
-Central American Group: Central American States
-Central Group: CENTRAL GROUP 11, Central Group of Eleven (CG-11)
-CfRN: Coalition for Rainforest Nations
+Central American Group: Central American States, Central America
+Central Group: CENTRAL GROUP 11, Central Group of Eleven (CG-11), Central Group Eleven
+CfRN: Coalition for Rainforest Nations, Coalition of Rainforest Nations
 CG-11: Central Group Eleven, Central Group 11
 Climate Alliance
 Climate Group
@@ -22,7 +22,7 @@ EIG: Environmental Integrity Group, Environmental Integrity Group (Switzerland, 
 EIT: Economies in Transition, EITs, economies in transition, Economies in transition
 EU: European Union
 G-77/China: G77, G-77, G-77 and China, G-77/ China, G-77/ CHINA, G-77/China, G77 and China, G77-China, G77/China, Group of 77 and China, Group of 77
-Group of Nine
+Group of Nine: Group of 9
 GRULAC: Group of Latin American and Caribbean Countries, Group of Latin American and Caribbean Countries (GRULAC), Group of Latin American and Caribbean countries, Latin American and Caribbean Group”
 HAC: High Ambition Coalition
 Indigenous Caucus
