@@ -73,6 +73,7 @@ class Scraper:
                 'BRIEF ANALYSIS OF',
                 'THINGS TO LOOK FOR',
                 'IN THE CORRIDORS',
+                'OTHER PRESS BRIEFINGS',
                 'This issue of the Earth Negotiations Bulletin',
             ]
             return any([opinion in text for opinion in opinions])
