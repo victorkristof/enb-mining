@@ -98,6 +98,13 @@ class Scraper:
         # Add spacing for "andParty" -> "and Party".
         text = re.sub(r'(and)([A-Z])', r'\1 \2', text)
         text = re.sub(r'77and', r'77 and', text)
+        # Add spacing between specific party names and "by" or "and" or a given verb.
+        text = re.sub(r'([A-Z][A-Z])(and)', r'\1 \2', text)
+        text = re.sub(r'(by)([A-Z])', r'\1 \2', text)
+        text = re.sub(r'(AUSTRALIA)(endorsed)', r'\1 \2', text)
+        text = re.sub(r'(AUSTRALIA)(said)', r'\1 \2', text)
+        text = re.sub(r'(Australia)(said)', r'\1 \2', text)
+        text = re.sub(r'(EU)(highlighted)', r'\1 \2', text)
         # Add spacing before parenthesis.
         text = re.sub(r'(\w)\(', r'\1 (', text)
         # Add spacing before dot.
