@@ -27,7 +27,7 @@ GRULAC: Group of Latin American and Caribbean Countries, Group of Latin American
 HAC: High Ambition Coalition
 Indigenous Caucus
 JUSCANZ
-LDCs: Least Developed Countries, LDC Group, LDC GROUP, Least Developed Countries (LDCs) group
+LDCs: Least Developed Countries, LDC Group, LDC GROUP, Least Developed Countries (LDCs) group, Least developed Countries (LDCs)
 League of Arab States
 LMDCs: Like-Minded Developing Countries, LMDC, Like-Minded Developing Countries (LMDCs), Like-Minded Developing Countries (LMDC), Like Minded Developing Countries, Like Minded Developing Countries (LMDCs), Like Minded Developing Countries (LMDC), Like-minded Developing Countries, Like minded Developing Countries (LMDCs), Like minded Developing Countries (LMDC)
 Mountain Landlocked Developing Countries: Mountainous Landlocked Developing Countries, Landlocked Mountainous Developing Countries
