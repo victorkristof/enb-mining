@@ -220,9 +220,19 @@ class Scraper:
             text = node.get_text()
             opinions = [
                 'BRIEF ANALYSIS OF',
+                'A Brief Analysis of',
                 'THINGS TO LOOK FOR',
                 'IN THE CORRIDORS',
                 'OTHER PRESS BRIEFINGS',
+                'KEEPING THE FOCUS ON PROGRESS',
+                # 'INTERSESSIONAL HIGHLIGHTS', # most of the intersessional highlights can also be deleted if we exclude the issue_type 'curtain-taiser'
+                # 'Intersessional Highlights',
+                'Where are we?',
+                'A Balanced Rulebook',
+                'Making the Concrete Abstract',
+                'The Expectations Gap',
+                'GLOSSARY',
+                'Ambition vs Reality',
                 'This issue of the Earth Negotiations Bulletin',
             ]
             return any([opinion in text for opinion in opinions])
