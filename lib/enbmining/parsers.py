@@ -31,6 +31,10 @@ class Parser(ABC):
 
 
 class InterventionParser(Parser):
+    def __init__(self, sentence, issue, parties, groupings, heading):
+        super().__init__(sentence, issue, parties, groupings)
+        self.heading = heading
+
     def parse(self, tagged_sentence):
         # Preprocess the sentence.
         Processors = [InParenthesisChunker, CityChunker]
@@ -49,15 +53,16 @@ class InterventionParser(Parser):
 
     def _to_interventions(self, entities):
         return [
-            Intervention(entity, self.sentence, self.issue)
+            Intervention(entity, self.sentence, self.issue, self.heading)
             for entity in entities
         ]
 
 
 class InteractionParser(Parser):
-    def __init__(self, sentence, issue, interaction_type, parties, groupings):
+    def __init__(self, sentence, issue, interaction_type, parties, groupings, heading):
         super().__init__(sentence, issue, parties, groupings)
         self.type = interaction_type
+        self.heading = heading
 
     def parse(self, tagged_sentence):
         """Parses a tagged sentence and returns a list of Interactions."""
@@ -163,13 +168,13 @@ class InteractionParser(Parser):
         # Return instances of Interactions.
         if inverse:
             return [
-                Interaction(rt, lt, self.sentence, self.issue, self.type)
+                Interaction(rt, lt, self.sentence, self.issue, self.type, self.heading)
                 for lt in left
                 for rt in right
             ]
         else:
             return [
-                Interaction(lt, rt, self.sentence, self.issue, self.type)
+                Interaction(lt, rt, self.sentence, self.issue, self.type, self.heading)
                 for lt in left
                 for rt in right
             ]
@@ -195,6 +200,7 @@ class InteractionParser(Parser):
                 self.sentence,
                 self.issue,
                 self.type,
+                self.heading,
             )
             for b in bs
         ]
@@ -212,6 +218,7 @@ class InteractionParser(Parser):
                 self.sentence,
                 self.issue,
                 self.type,
+                self.heading,
             )
             for a, b in combine(subtree, subtree)
         ]
@@ -261,8 +268,8 @@ class OnBehalfParser(InteractionParser):
         }
     )
 
-    def __init__(self, sentence, issue, parties, groupings):
-        super().__init__(sentence, issue, 'on-behalf', parties, groupings)
+    def __init__(self, sentence, issue, parties, groupings, heading):
+        super().__init__(sentence, issue, 'on-behalf', parties, groupings, heading)
 
     @classmethod
     def collapse(cls, tagged_sentence, groupings=True, parties=True):
@@ -343,8 +350,8 @@ class SupportParser(InteractionParser):
         }
     )
 
-    def __init__(self, sentence, issue, parties, groupings):
-        super().__init__(sentence, issue, 'support', parties, groupings)
+    def __init__(self, sentence, issue, parties, groupings, heading):
+        super().__init__(sentence, issue, 'support', parties, groupings, heading)
 
 
 class OppositionParser(InteractionParser):
@@ -379,8 +386,8 @@ class OppositionParser(InteractionParser):
         }
     )
 
-    def __init__(self, sentence, issue, parties, groupings):
-        super().__init__(sentence, issue, 'opposition', parties, groupings)
+    def __init__(self, sentence, issue, parties, groupings, heading):
+        super().__init__(sentence, issue, 'opposition', parties, groupings, heading)
 
 
 class WhileOppositionParser(InteractionParser):
@@ -407,8 +414,8 @@ class WhileOppositionParser(InteractionParser):
         }
     ]
 
-    def __init__(self, sentence, issue, parties, groupings):
-        super().__init__(sentence, issue, 'opposition', parties, groupings)
+    def __init__(self, sentence, issue, parties, groupings, heading):
+        super().__init__(sentence, issue, 'opposition', parties, groupings, heading)
 
 
 class AgreementParser(InteractionParser):
@@ -421,7 +428,7 @@ class AgreementParser(InteractionParser):
     chunk_rules = [
         ChunkRule(
             r'((<PAR|GRP><,>?)*<PAR|GRP><,>?<AND|WITH>?<PAR|GRP><,>?)+',
-            'Aggreement',
+            'Agreement',
         )
     ]
     chunk_parsers = [
@@ -431,8 +438,8 @@ class AgreementParser(InteractionParser):
         }
     ]
 
-    def __init__(self, sentence, issue, parties, groupings):
-        super().__init__(sentence, issue, 'agreement', parties, groupings)
+    def __init__(self, sentence, issue, parties, groupings, heading):
+        super().__init__(sentence, issue, 'agreement', parties, groupings, heading)
 
     @classmethod
     def collapse(cls, tagged_sentence):
@@ -474,7 +481,7 @@ class Chunker:
 class InParenthesisChunker(Chunker):
 
     """Chunks "(Country)", corresponding to people from a country being
-    mentionned in the bulletin."""
+    mentioned in the bulletin."""
 
     def __init__(self):
         chunk_rules = [ChunkRule(r'<\(><PAR><\)>', 'In parenthesis')]
