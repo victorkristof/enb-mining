@@ -255,11 +255,14 @@ class Scraper:
         # Rename a.m./p.m. as am/pm.
         text = re.sub(r'a\.m\.', r'am', text)
         text = re.sub(r'p\.m\.', r'pm', text)
+        # Rename 'Amb.' as 'Amb'.
+        text = re.sub(r'Amb\.', r'Amb', text)
         # Add spacing for "andParty" -> "and Party".
         text = re.sub(r'(and)([A-Z])', r'\1 \2', text)
         text = re.sub(r'77and', r'77 and', text)
         # Add spacing between specific party names and "by" or "and" or a given verb.
         text = re.sub(r'([A-Z][A-Z])(and)', r'\1 \2', text)
+        text = re.sub(r'([A-Z][A-Z])(said)', r'\1 \2', text)
         text = re.sub(r'(by)([A-Z])', r'\1 \2', text)
         text = re.sub(r'(AUSTRALIA)(endorsed)', r'\1 \2', text)
         text = re.sub(r'(AUSTRALIA)(said)', r'\1 \2', text)
