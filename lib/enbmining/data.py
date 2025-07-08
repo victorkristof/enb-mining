@@ -20,13 +20,14 @@ class Data(ABC):
 
 class Intervention(Data):
 
-    _keys = ['issue_id', 'entity', 'date', 'sentence']
+    _keys = ['issue_id', 'entity', 'date', 'heading', 'sentence']
 
-    def __init__(self, entity, sentence, issue):
+    def __init__(self, entity, sentence, issue, heading=None):
         self.entity = entity
         self.sentence = sentence
         self.date = issue['issue_date']
         self.issue_id = int(issue['id'])
+        self.heading = heading if heading is not None else "No heading found."
 
     def __str__(self):
         return ' '.join(
@@ -37,6 +38,7 @@ class Intervention(Data):
                 f'on {self.date}:',
                 f'"{self.sentence}"',
                 f'(Issue {self.issue_id})',
+                f'(Heading: "{self.heading}")',
             ]
         )
 
@@ -50,6 +52,7 @@ class Intervention(Data):
                 self.sentence,
                 self.date,
                 self.issue_id,
+                self.heading,
             )
         )
 
@@ -61,6 +64,7 @@ class Intervention(Data):
             and self.sentence == other.sentence
             and self.date == other.date
             and self.issue_id == other.issue_id
+            and self.heading == other.heading
         )
 
 
@@ -72,10 +76,11 @@ class Interaction(Data):
         'entity_b',
         'type',
         'date',
+        'heading',
         'sentence',
     ]
 
-    def __init__(self, entity_a, entity_b, sentence, issue, interaction_type):
+    def __init__(self, entity_a, entity_b, sentence, issue, interaction_type, heading):
         self.entity_a = entity_a
         self.entity_b = entity_b
         self.sentence = sentence
@@ -84,6 +89,7 @@ class Interaction(Data):
         if interaction_type not in INTERACTION_TYPES:
             raise ValueError(f'Invalid type "{interaction_type}"')
         self.type = interaction_type
+        self.heading = heading
 
     def __str__(self):
         return ' '.join(
@@ -94,6 +100,7 @@ class Interaction(Data):
                 f'on {self.date}:',
                 f'"{self.sentence}"',
                 f'(Issue {self.issue_id})',
+                f'(Heading: "{self.heading}")',
             ]
         )
 
