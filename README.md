@@ -47,6 +47,12 @@ python scripts/3-scrape-interventions.py data/html data/issues.csv data/parties.
 python scripts/4-scrape-interactions.py data/html data/issues.csv data/parties.txt data/groupings.txt data/interactions.csv
 ```
 
+5. Classify the headings into negotiation bodies and issue areas:
+
+```
+python scripts/5-classify-headings.py
+```
+
 ## List of entities
 
 The scripts depend on lists of parties and party groupings (together referred to as "entities").
