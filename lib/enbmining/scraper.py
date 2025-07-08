@@ -344,10 +344,21 @@ class InterventionScraper(Scraper):
     def __init__(self, html, issue, parties, groupings):
         super().__init__(html, issue, parties, groupings)
 
-    def _scrape_from_sentence(self, sentence):
+    def scrape(self):
+        # Scraped interventions/interactions (list of list).
+        headsentences = self.extract_sentences()
+        scraped = [
+            self._scrape_from_sentence(sentence, heading)
+            for heading, sentences in headsentences.items()
+            for sentence in sentences
+        ]
+        # Flatten this nested list.
+        return flatten(scraped)
+
+    def _scrape_from_sentence(self, sentence, heading):
         """Extracts a list of interventions from a sentence."""
         parser = InterventionParser(
-            sentence, self.issue, self.parties, self.groupings
+            sentence, self.issue, self.parties, self.groupings, heading
         )
         tagged = self.pos_tagger.tag(self._preprocess(sentence))
         return parser.parse(tagged)
@@ -357,11 +368,22 @@ class InteractionScraper(Scraper):
     def __init__(self, html, issue, parties, groupings):
         super().__init__(html, issue, parties, groupings)
 
-    def _scrape_from_sentence(self, sentence):
+    def scrape(self):
+        # Scraped interventions/interactions (list of list).
+        headsentences = self.extract_sentences()
+        scraped = [
+            self._scrape_from_sentence(sentence, heading)
+            for heading, sentences in headsentences.items()
+            for sentence in sentences
+        ]
+        # Flatten this nested list.
+        return flatten(scraped)
+
+    def _scrape_from_sentence(self, sentence, heading):
         """Extracts a list of interactions from a sentence."""
         tagged = self.pos_tagger.tag(self._preprocess(sentence))
         interactions = list()
         for Parser in INTERACTION_PARSERS:
-            parser = Parser(sentence, self.issue, self.parties, self.groupings)
+            parser = Parser(sentence, self.issue, self.parties, self.groupings, heading)
             interactions.extend(parser.parse(tagged))
         return interactions
