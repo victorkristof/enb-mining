@@ -212,7 +212,7 @@ class Scraper:
 
     @staticmethod
     def _get_paragraphs(content):
-        """Filters only the paragraphs that are relevant.
+        """Filters only the paragraphs that are relevant, as well as the standalone heading tags.
 
         In particular, it removes analysis and opinion sections."""
 
@@ -233,8 +233,8 @@ class Scraper:
                 # We stop as soon as we see an opinion paragraph.
                 if is_opinion_paragraph(node):
                     return paragraphs
-                # Keep only <p> tags.
-                elif node.name == 'p':
+                # Keep <p>, <h2>, <h3>, and <h4> tags.
+                elif node.name in ['p', 'h2', 'h3', 'h4']:
                     paragraphs.append(node)
         return paragraphs
 
