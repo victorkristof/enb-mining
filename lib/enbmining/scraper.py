@@ -294,6 +294,51 @@ class Scraper:
         text = re.sub(r'QELRO[Ss]', 'qelros', text)
         return text
 
+    # Identify additional headings that have specific text in their own paragraph, but are not tagged as <h2> or <h3>
+    def _additional_heading(self, node):
+        text = node.get_text().strip()
+        headings = [
+            'SBI',
+            'SBI PLENARY',
+            'SBI CONTACT GROUPS',
+            'SBSTA',
+            'SBSTA PLENARY',
+            'SBSTA CONTACT GROUPS',
+            'JOINT SBI/SBSTA',
+            'COP',
+            'COP PLENARY',
+            'COP CONTACT GROUPS',
+            'HIGH-LEVEL SEGMENT',
+            'INFORMAL HIGH-LEVEL PLENARY',
+            'INFORMAL HIGH-LEVEL PLENARY MORNING SESSION',
+            'INFORMAL HIGH-LEVEL PLENARY NIGHT SESSION',
+            'INFORMAL HIGH-LEVEL PLENARY & CONSULTATIONS',
+            'CONTACT GROUP',
+            'CONTACT GROUPS',
+            'CONTACT GROUPS AND INFORMAL CONSULTATIONS',
+            'INFORMAL GROUPS',
+            'INFORMAL MEETINGS',
+            'INFORMAL CONSULTATIONS',
+            'INFORMAL GROUPS AND CONSULTATIONS',
+            'INFORMAL MEETINGS AND CONTACT GROUPS',
+            'NEGOTIATING GROUPS',
+            'NEGOTIATING GROUPS AND INFORMAL CONSULTATIONS',
+            'PLENARY',
+            'OPENING PLENARY',
+            'LATE NIGHT PLENARY',
+            'CLOSING PLENARY',
+            'ROUND TABLE',
+            'ROUND TABLES',
+            'PRESIDENTS GROUP',
+            'MAIN NEGOTIATING GROUP',
+            'INFORMAL DRAFTING GROUP ON CDM TECHNICAL ISSUES',
+            'JOINT WORKING GROUP ON COMPLIANCE',
+            'WELCOMING CEREMONY',
+            'SPECIAL SESSION ON LULUCF AND THE CDM',
+            'NOTE BY THE PRESIDENT OF COP-6',
+            ]
+        return text in headings
+
 
 class InterventionScraper(Scraper):
     def __init__(self, html, issue, parties, groupings):
