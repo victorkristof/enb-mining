@@ -42,7 +42,7 @@ class Entity:
     @classmethod
     def _parse(cls, path):
         path = Path(path)
-        with path.open() as f:
+        with path.open(encoding="utf8") as f:
             return [
                 cls._parse_line(line.strip())
                 for line in f.readlines()

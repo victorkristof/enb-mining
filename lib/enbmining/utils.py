@@ -10,7 +10,7 @@ def save_csv(list_of_dict, output_path, sort_keys=False, keys=None):
         else:
             keys = list_of_dict[0].keys()
     output_path = Path(output_path)
-    with output_path.open('w', newline='') as file:
+    with output_path.open('w', newline='',encoding="utf8") as file:
         dict_writer = csv.DictWriter(file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(list_of_dict)
@@ -19,7 +19,7 @@ def save_csv(list_of_dict, output_path, sort_keys=False, keys=None):
 
 def load_csv(path):
     path = Path(path)
-    with path.open() as f:
+    with path.open(encoding="utf8") as f:
         return [
             {k: v for k, v in row.items()}
             for row in csv.DictReader(f, skipinitialspace=True)
@@ -28,7 +28,7 @@ def load_csv(path):
 
 def load_html(html_folder, issue_id):
     path = html_folder / Path(issue_id).with_suffix('.html')
-    with path.open() as f:
+    with path.open(encoding="utf8") as f:
         return f.read()
 
 
