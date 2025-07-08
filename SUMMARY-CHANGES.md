@@ -181,3 +181,43 @@
 
 - sentence in issue_id == 73
   Changed rule for agreement: final "and"/"with" is optional now
+  
+  
+# Summary of changes to add headings and classify the negotiation groups and issue areas - July 2025
+
+Modified:
+    - data.py to include ‚heading‘ in all types of outputs for interventions and interactions
+    - entities.py to specify encoding to "utf8"
+    - In parsers.py: 
+        - add an _init_ part to the InterventionParser
+        - Add references to self.heading wherever necessary in arguments or outputs
+    - In scraper.py:
+        - Updated the method 'extract_sentences' to add the scraping of headings for each sentence ('headsentences')
+        - Added heading wherever necessary in arguments or outputs
+        - Added list of headings without identifiable tagging
+        - Check that the normalisation function works as expected
+        - On line 68 (after text = paragraph.get_text()): add text = self._normalize(text) —> this deals with missing spaces between sentences or between common words
+        - On line 165, added code to normalise ‚Amb.‘ into ‚Amb‘
+        - Within „def extract_sentences(self):“, e.g. on line 77, 86, 97, 104: Add code to specify that the heading should be removed from the text ONLY if this heading is at the beginning of the sentence or if it is followed by a colon 
+        - Added h4 heading levels to extract_sentences
+        - Modified the _get_paragraphs function so that it collects on only the ‚p‘ nodes, but also the standalone headings (‚h2‘, ‚h3‘, ‚h4‘)
+        - Added code to ensure that concatenated headings and subheadings are not repeated
+    - In utils.py:
+        - Specified encoding to "utf8" for the output csv files, for csv files to be loaded, for html files to be loaded, 
+    - In 3-scrape-interventions.py:
+        - Added specific paths in def main —> this needs to be deleted again after running, and the # in the alternative def main needs to be removed
+        - Added heading to the subset of columns used to identify duplicates
+        - Got rid of heading in the subset of columns used to identify duplicates —> because the above resulted in unwanted duplicates still appearing in the data
+        - —> Ultimately, no remaining changes to the original version.
+    - In 4-scrape-interactions.py:
+        - Added specific paths in def main —> this needs to be deleted again after running, and the # in the alternative def main needs to be removed
+        - Removed —> no remaining changes to the original version.
+    - In groupings.txt: 
+        - Added Grupo Sur
+    - In coalitions.txt:
+        - Added Grupo Sur to Argentina, Brazil, Paraguay, Uruguay
+    - In parties.txt:
+        - Added Grupo Sur to Argentina, Brazil, Paraguay, Uruguay
+    - In setup.py and in PKG-INFO: 
+        - Changed enb-mining package version to 0.2.
+    - In README.md —> add instructions to also run the script 5 to classify the headings
