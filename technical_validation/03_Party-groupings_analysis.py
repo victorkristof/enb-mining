@@ -2,7 +2,7 @@
 ##### Authors: Paula Castro & Marlene Kammerer
 ##### Date: December 20, 2024
 
-##### Part 3: Analysis of parties/ groupings and dyads, Figures 6-10
+##### Part 3: Analysis of parties/ groupings and dyads, Figures 7-11
 #####################################################################################
 #####################################################################################
 
@@ -40,7 +40,11 @@ ENB_hc = pd.read_csv('data/ENB_hc_clean.csv', decimal = ',', sep= ',', encoding 
 ENB_mc = pd.read_csv('data/ENB_mc_clean.csv', decimal = ',',  sep=',', encoding = "ISO-8859-1") # machine-coded
 # subset mc
 
+ENB_mc["year"] = ENB_mc["year"].astype(float)
 ENB_mc = ENB_mc[ENB_mc["year"] < 2014]
+ENB_mc.shape
+# 38339 rows
+
 ENB_mc['type2'] = pd.Categorical(ENB_mc['type2'], ["agreement", "support", "behalf-of", "opposition"])
 ENB_hc['type_recoded'] = pd.Categorical(ENB_hc['type_recoded'], ["agreement", "support", "behalf-of", "opposition"])
 
@@ -203,7 +207,7 @@ countries.columns = ['sender_mc', 'interactions_sender_mc', 'sender_hc', 'intera
 countries.to_csv(r'data/Country_interactions.csv')
 
 
-#%% Figure 6: Plot Top 10
+#%% Figure 7: Plot Top 10
 
 import seaborn as sns
 sns.set_style('dark')
@@ -269,10 +273,10 @@ plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 # plt.suptitle('Top 10 countries and coalitions, full dataset', fontsize=20)
-save_fig("Figure6_Top10_full_dataset")
+save_fig("Figure7_Top10_full_dataset")
 plt.show()
 
-#%% Figure 7 and 8: Top 10 senders and targets; cooperation and conflict separated
+#%% Figure 8 and 9: Top 10 senders and targets; cooperation and conflict separated
 
 # Separate conflictual and cooperative interactions
 
@@ -399,7 +403,7 @@ plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 # plt.suptitle('Top 10 countries and coalitions, only cooperation', fontsize=20)
-save_fig("Figure7_Top10_cooperation")
+save_fig("Figure8_Top10_cooperation")
 plt.show()
 
 
@@ -465,10 +469,10 @@ plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 # plt.suptitle('Top 10 Countries and coalitions, only conflict', fontsize=20)
-save_fig("Figure8_Top10_conflict")
+save_fig("Figure9_Top10_conflict")
 plt.show()
 
-#%% Figure 9 & 10
+#%% Figure 10 & 11
 
 # Count most frequent edges for coop and conf dataset
 # Create a variable that maps sender to target to identify edges
@@ -530,7 +534,7 @@ plt.xlabel('Top 20 pairs, hand-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
 
 # plt.suptitle('Most frequent pairs (Top 20) mc vs. hc', fontsize=20)
-save_fig("Figure9_Top20_edges_hc_mc")
+save_fig("Figure10_Top20_edges_hc_mc")
 plt.show()
 
 
@@ -583,7 +587,7 @@ plt.xlabel('Top 20 pairs, hand-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
 
 # plt.suptitle('Most frequent pairs (Top 20) mc vs. hc, conflict', fontsize=20)
-save_fig("Figure10_Top20_edges_hc_mc_conf")
+save_fig("Figure11_Top20_edges_hc_mc_conf")
 plt.show()
 
 ## The END
