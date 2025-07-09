@@ -163,8 +163,8 @@ class InteractionParser(Parser):
         index = self.index_of(self.tag, subtree)
         # And keep only the tokens, not the tags, and get the Entity
         # corresponding to the token.
-        left = [self._token2entity[token] for token, _ in subtree[:index]]
-        right = [self._token2entity[token] for token, _ in subtree[index + 1 :]]
+        left = [self._token2entity[token] for token, _ in subtree[:index] if token in self._token2entity]
+        right = [self._token2entity[token] for token, _ in subtree[index + 1 :] if token in self._token2entity]
         # Return instances of Interactions.
         if inverse:
             return [
