@@ -88,7 +88,7 @@ ENB_mc_sub['summary_keep'] = np.where(
 
 # Count number of observations to keep and drop
 ENB_mc_sub['summary_keep'].value_counts()
-# To keep 50293, to drop 38207, total 88500 observations
+# To keep 50245, to drop 37315, total 87560 observations
 
 #%% Exclude summaries and curtain-raisers (but keep the exceptions)
 
@@ -96,7 +96,7 @@ ENB_mc_sub_clean = ENB_mc_sub[ENB_mc_sub["summary_keep"] == "keep"]
 
 # Count new number of observations
 ENB_mc_sub_clean.shape
-# n=50293 after dropping
+# n=50245 after dropping
 
 #%% Remove the category "others" from the countries
 
@@ -111,7 +111,7 @@ ENB_mc_sub_clean.rename(columns={'entity_a': 'sender', 'entity_b': 'target'}, in
 ENB_mc_sub_clean.head(5)
 
 ENB_mc_sub_clean.shape
-# n=47710
+# n=47662
 
 #%% Clean the type (relation) variable in both datasets
 # In the MC dataset, extract the letters
