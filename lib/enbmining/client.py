@@ -2,6 +2,10 @@ import time
 
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 BASE_URL = 'https://enb.iisd.org/'
 PAGE = 'page={number}'
@@ -93,9 +97,25 @@ class Client:
         return BASE_URL + href
 
     def _get_page(self, url):
-        r = requests.get(url)
-        r.raise_for_status()  # Raise an error if status code is 4XX or 5XX.
-        return r.text
+        # Use Selenium to fetch the page as a real browser
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--window-size=1920,1080')
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_argument('--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36')
+
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        try:
+            driver.get(url)
+            # Wait for the page to load. Increase the sleep if needed.
+            import time
+            time.sleep(2)
+            page_source = driver.page_source
+        finally:
+            driver.quit()
+        return page_source
 
     def _get_location(self, soup):
         datevenue = soup.find('p', class_='c-banner__date-and-venue')
