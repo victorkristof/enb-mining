@@ -5,7 +5,10 @@ import time
 from pathlib import Path
 
 import fire
-import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def log(issue, response, html_folder):
@@ -26,6 +29,24 @@ def save_html(content, path):
         f.write(content)
 
 
+def fetch_html_with_selenium(url):
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--window-size=1920,1080')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    try:
+        driver.get(url)
+        import time
+        time.sleep(2)
+        return driver.page_source
+    finally:
+        driver.quit()
+
+
 def main(issues_path, html_folder, debug=False):
     issues = load_csv(issues_path)
 
@@ -39,12 +60,8 @@ def main(issues_path, html_folder, debug=False):
 
         time.sleep(random.uniform(0, 2))
         url = issue['url']
-        r = requests.get(url)
-        if r.status_code >= 400:
-            if debug:
-                log(issue, r, html_folder)
-            continue
-        save_html(r.text, path)
+        html = fetch_html_with_selenium(url)
+        save_html(html, path)
 
 
 if __name__ == '__main__':
