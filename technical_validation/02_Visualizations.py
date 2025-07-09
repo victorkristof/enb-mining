@@ -1,8 +1,8 @@
 ##### Technical validation machine-coded Earth Negotiation Bulletin (ENB) data set
 ##### Authors: Paula Castro & Marlene Kammerer
-##### Date: December 20, 2024
+##### Date: July 8, 2025
 
-##### Part 02: Visualizations, Figures 1-5
+##### Part 02: Visualizations, Figures 1-6
 #####################################################################################
 #####################################################################################
 
@@ -19,8 +19,10 @@ import geopandas as gpd
 import geodatasets
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import seaborn as sns
 import networkx as nx
+import re
 import scipy as sp
 from shapely.geometry import Point, Polygon
 
@@ -48,15 +50,16 @@ ENB_mc = pd.read_csv('data/ENB_mc_clean.csv', decimal = ',',  sep=',', encoding 
 interventions = pd.read_csv("data/ENB_mc_interventions.csv")
 groupings = pd.read_csv("data/groupings.txt", sep=":", header=None, names=["group", "group_aliases"])
 issues = pd.read_csv("data/issues.csv")
+interactions_topics = pd.read_csv("data/interactions_wtopics.csv")
 
 #%%
 # ENB_hc has 61546 rows
-# ENB_mc has 47710 rows (without curtain-raisers and summaries)
+# ENB_mc has 47662 rows (without curtain-raisers and summaries)
 
 #% Subset machine-coded data set to before 2014 (hand-coded ends in 2013)
 ENB_mc["year"] = ENB_mc["year"].astype(float)
 ENB_mc_sub_2013 = ENB_mc[ENB_mc["year"] < 2014]
-
+ENB_mc_sub_2013.shape
 # ENB_mc has now 38339 rows
 
 #%% Figure 1
@@ -187,7 +190,94 @@ save_fig("Figure2_interactions_network_2015")
 plt.show()
 
 
-#%% Figure 3
+#%% Figures 3a and 3b
+
+interactions_full2 = pd.merge(interactions_topics, issues, left_on="issue_id", right_on="id")
+
+# Extract year from issue_date
+interactions_full2["year"] = interactions_full2["date"].astype(str).str.extract(r"(\d{4})")
+
+# Classify entities as coalition or country
+interactions_full2["coalition_a"] = interactions_full2["entity_a"].isin(groupings["group"]).map({True: "coalition", False: "country"})
+interactions_full2["coalition_b"] = interactions_full2["entity_b"].isin(groupings["group"]).map({True: "coalition", False: "country"})
+
+# Check the results of the merge
+print(interactions_full2.head())
+
+# Remove <Others>, curtain-raisers, and summaries
+interactions_full2 = interactions_full2[(interactions_full2["entity_a"] != "<Others>") &
+                                      (interactions_full2["entity_b"] != "<Others>") &
+                                      (interactions_full2["type_y"] != "curtain-raiser") &
+                                      (interactions_full2["type_y"] != "summary")]
+
+# Keep only cooperative interactions
+interactions_coop2 = interactions_full2[interactions_full2["type_x"] != "'opposition'"]
+
+# See the shape of the filtered DataFrame
+print(interactions_coop2.shape)
+
+# Filter by topic and year
+def filter_interactions(df, topic_col, year):
+    return df[(df[topic_col] == 1) & (df["year"] == str(year))][["entity_a", "entity_b"]]
+
+coop_mitig_2015 = filter_interactions(interactions_coop2, "mitigation", 2015)
+coop_adapt_2015 = filter_interactions(interactions_coop2, "adaptation", 2015)
+
+# Check results
+print(coop_mitig_2015.head())
+print(coop_mitig_2015.shape)
+print(coop_adapt_2015.head())
+print(coop_adapt_2015.shape)
+
+# Define helper function to build and annotate network
+def build_network(df_edges, groupings):
+    G = nx.DiGraph()
+    G.add_edges_from(df_edges.values)
+    entities = list(G.nodes())
+    annex1_entities = ["Australia", "Belarus", "Canada", "EU", "Japan", "Liechtenstein", "Switzerland", "New Zealand", "Norway", "Russia", "Turkey", "UG", "Ukraine", "United States"]
+    for node in G.nodes():
+        if node == "EIG":
+            G.nodes[node]["Group"] = "mixed"
+        elif node in annex1_entities:
+            G.nodes[node]["Group"] = "Annex I"
+        else:
+            G.nodes[node]["Group"] = "non-Annex I"
+    
+    return G
+
+# Plotting function
+def plot_network(G, title, filename):
+    # Use spring_layout for better separation of disconnected components
+    pos = nx.spring_layout(G, k=0.5, seed=42)  # Adjust `k` for spacing between nodes
+    
+    group_colors = {"Annex I": "sienna", "non-Annex I": "darkolivegreen", "mixed": "cornflowerblue"}
+    node_colors = [group_colors.get(G.nodes[n].get("Group", "non-Annex I"), "gray") for n in G.nodes()]
+    
+    plt.figure(figsize=(15, 10))
+    nx.draw_networkx_nodes(G, pos, node_size=300, alpha=0.75, node_color=node_colors)
+    nx.draw_networkx_edges(G, pos, arrowstyle='->', arrowsize=10, edge_color='gray')
+    nx.draw_networkx_labels(G, pos, font_size=8)
+    
+    legend_elements = [
+        Line2D([0], [0], marker='o', color='w', label='Annex I', markersize=10, markerfacecolor='sienna'),
+        Line2D([0], [0], marker='o', color='w', label='non-Annex I', markersize=10, markerfacecolor='darkolivegreen')
+    ]
+    plt.legend(handles=legend_elements, loc='lower right', title="Country group", fontsize=10, title_fontsize=12)
+    # plt.title(title)
+    plt.tight_layout()
+    plt.savefig(filename, dpi=300)
+    plt.show()
+    plt.close()
+
+# Generate and save plots
+G_mitig = build_network(coop_mitig_2015, groupings)
+plot_network(G_mitig, "Mitigation Interactions Network (2015)", "Figure3a_interactions_network_2015_annexes_mitigation_v2.png")
+
+G_adapt = build_network(coop_adapt_2015, groupings)
+plot_network(G_adapt, "Adaptation Interactions Network (2015)", "Figure3b_interactions_network_2015_annexes_adaptation_v2.png")
+
+
+#%% Figure 4
 # Plot and count the type variable for both datasets
 
 import seaborn as sns
@@ -221,10 +311,10 @@ colors = ['#5cb85c', '#5bc0de']
 
 # plot with annotations
 type_count.plot(kind='bar', color=colors, figsize=(8, 6), rot=0, ylabel='Number of interactions', grid=True)
-save_fig('Figure3_Type-count-plot')
+save_fig('Figure4_Type-count-plot')
 plt.show()
 
-#%% Figure 4: Plot total number of interactions over time, all types
+#%% Figure 5: Plot total number of interactions over time, all types
 
 # Create year variable in ENB_hc
 ENB_hc["date"] = ENB_hc["date"].astype(str)
@@ -323,11 +413,11 @@ plot_interactions(
 # Adjust layout and save
 # fig.suptitle("Interactions: Hand-Coded vs Machine-Coded Over Time", fontsize=20)
 plt.tight_layout(rect=[0, 0, 1, 0.97])
-save_fig("Figure4_Combined_Interactions_Plot")
+save_fig("Figure5_Combined_Interactions_Plot")
 
 plt.show()
 
-#%% Figure 5: Plot of number of active senders and popular targets
+#%% Figure 6: Plot of number of active senders and popular targets
 
 # count of senders by year
 grouped_mc_year_sender = ENB_mc_sub_2013.groupby("year")
@@ -392,7 +482,7 @@ ax2.legend(title='Target countries', fontsize=10, loc='lower left')
 
 # fig.suptitle("Sender and target countries over time, \nhand-coded (green) vs machine-coded (blue) datasets", fontsize=16)
 
-save_fig("Figure5_Sender_target_countries_hc_vs_mc_plot")
+save_fig("Figure6_Sender_target_countries_hc_vs_mc_plot")
 plt.show()
 
 ## Go to 03_Party-groupings_analysis
