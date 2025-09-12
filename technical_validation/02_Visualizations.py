@@ -246,35 +246,44 @@ def build_network(df_edges, groupings):
     return G
 
 # Plotting function
-def plot_network(G, title, filename):
+def plot_network(G, ax, panel_label, title):
     # Use spring_layout for better separation of disconnected components
     pos = nx.spring_layout(G, k=0.5, seed=42)  # Adjust `k` for spacing between nodes
     
     group_colors = {"Annex I": "sienna", "non-Annex I": "darkolivegreen", "mixed": "cornflowerblue"}
     node_colors = [group_colors.get(G.nodes[n].get("Group", "non-Annex I"), "gray") for n in G.nodes()]
     
-    plt.figure(figsize=(15, 10))
-    nx.draw_networkx_nodes(G, pos, node_size=300, alpha=0.75, node_color=node_colors)
-    nx.draw_networkx_edges(G, pos, arrowstyle='->', arrowsize=10, edge_color='gray')
-    nx.draw_networkx_labels(G, pos, font_size=8)
+    nx.draw_networkx_nodes(G, pos, ax=ax, node_size=300, alpha=0.75, node_color=node_colors)
+    nx.draw_networkx_edges(G, pos, ax=ax, arrowstyle='->', arrowsize=10, edge_color='gray')
+    nx.draw_networkx_labels(G, pos, ax=ax, font_size=10)
+    
+    # Remove black border (spines) around subplot
+    for spine in ax.spines.values():
+        spine.set_visible(False)
     
     legend_elements = [
         Line2D([0], [0], marker='o', color='w', label='Annex I', markersize=10, markerfacecolor='sienna'),
         Line2D([0], [0], marker='o', color='w', label='non-Annex I', markersize=10, markerfacecolor='darkolivegreen')
     ]
-    plt.legend(handles=legend_elements, loc='lower right', title="Country group", fontsize=10, title_fontsize=12)
-    # plt.title(title)
-    plt.tight_layout()
-    plt.savefig(filename, dpi=300)
-    plt.show()
-    plt.close()
+    
+    ax.legend(handles=legend_elements, loc='lower right', title="Country group", fontsize=10, title_fontsize=12)
+    ax.set_title(f"{panel_label} {title}", fontsize=14)
 
-# Generate and save plots
+# Create subplots
+fig, axes = plt.subplots(2, 1, figsize=(15, 19))
+
+# Plot mitigation network in first (top) panel
 G_mitig = build_network(coop_mitig_2015, groupings)
-plot_network(G_mitig, "Mitigation Interactions Network (2015)", "Figure3a_interactions_network_2015_annexes_mitigation_v2.png")
+plot_network(G_mitig, axes[0], "(a)", "Mitigation")
 
+# Plot adaptation network in second (bottom) panel
 G_adapt = build_network(coop_adapt_2015, groupings)
-plot_network(G_adapt, "Adaptation Interactions Network (2015)", "Figure3b_interactions_network_2015_annexes_adaptation_v2.png")
+plot_network(G_adapt, axes[1], "(b)", "Adaptation")
+
+# Generate and save plot
+plt.tight_layout()
+plt.savefig("Figure3_interactions_network_2015_combined.png", dpi=300)
+plt.show()
 
 
 #%% Figure 4
