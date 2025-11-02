@@ -242,31 +242,50 @@ interactions_sender_hc = top10_sender_hc['interactions_sender_hc']
 target_hc = top10_target_hc['target_hc']
 interactions_target_hc = top10_target_hc['interactions_target_hc']
 
+# Build a consistent color mapping across all four subplots so identical labels share the same color
+# Collect all unique labels across the four Top 10 lists
+all_labels = pd.unique(
+    pd.concat([
+        top10_sender_mc['sender_mc'],
+        top10_sender_hc['sender_hc'],
+        top10_target_mc['target_mc'],
+        top10_target_hc['target_hc']
+    ], ignore_index=True).dropna().astype(str)
+)
+
+# Use a palette with enough distinct colors and map labels -> colors
+_shared_palette = sns.color_palette("mako", n_colors=len(all_labels))
+_label_to_color = {label: color for label, color in zip(all_labels, _shared_palette)}
+
+# Helper to build the color list for a given ordered label series
+def _colors_for(labels_series):
+    return [_label_to_color.get(str(lbl)) for lbl in labels_series]
+
 # make plot
 
 plt.subplot(2,2,1)
-sns.barplot(x=sender_mc, y=interactions_sender_mc, alpha=1, palette="mako")
+sns.barplot(x=sender_mc, y=interactions_sender_mc, alpha=1, palette=_colors_for(sender_mc))
 plt.ylabel('Number of interactions', fontsize=10)
 plt.xlabel('Top 10 senders, machine-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 plt.subplot(2,2,2)
-sns.barplot(x=sender_hc, y=interactions_sender_hc, alpha=1, palette="mako")
+sns.barplot(x=sender_hc, y=interactions_sender_hc, alpha=1, palette=_colors_for(sender_hc))
 plt.ylabel('Number of interactions', fontsize=10)
 plt.xlabel('Top 10 senders, hand-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 plt.subplot(2,2,3)
-sns.barplot(x=target_mc, y=interactions_target_mc, alpha=1, palette="mako")
+sns.barplot(x=target_mc, y=interactions_target_mc, alpha=1, palette=_colors_for(target_mc))
 plt.ylabel('Number of interactions', fontsize=10)
 plt.xlabel('Top 10 targets, machine-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 plt.subplot(2,2,4)
-sns.barplot(x=target_hc, y=interactions_target_hc, alpha=1, palette="mako")
+sns.barplot(x=target_hc, y=interactions_target_hc, alpha=1, palette=_colors_for(target_hc))
 plt.ylabel('Number of interactions', fontsize=10)
 plt.xlabel('Top 10 targets, hand-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
@@ -370,17 +389,29 @@ interactions_sender_hc = top10_sender_hc['interactions_sender_hc']
 target_hc = top10_target_hc['target_hc']
 interactions_target_hc = top10_target_hc['interactions_target_hc']
 
+# Build a consistent color mapping across the four coop subplots
+all_labels = pd.unique(
+    pd.concat([
+        top10_sender_mc['sender_mc'],
+        top10_sender_hc['sender_hc'],
+        top10_target_mc['target_mc'],
+        top10_target_hc['target_hc']
+    ], ignore_index=True).dropna().astype(str)
+)
+_shared_palette = sns.color_palette("mako", n_colors=len(all_labels))
+_label_to_color = {label: color for label, color in zip(all_labels, _shared_palette)}
+
 # Senders
 
 plt.subplot(2,2,1)
-sns.barplot(x=sender_mc, y=interactions_sender_mc, alpha=1, palette="mako")
+sns.barplot(x=sender_mc, y=interactions_sender_mc, alpha=1, palette=[_label_to_color.get(str(lbl)) for lbl in sender_mc])
 plt.ylabel('Number of cooperative interactions', fontsize=10)
 plt.xlabel('Top 10 senders, machine-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 plt.subplot(2,2,2)
-sns.barplot(x=sender_hc, y=interactions_sender_hc, alpha=1, palette="mako")
+sns.barplot(x=sender_hc, y=interactions_sender_hc, alpha=1, palette=[_label_to_color.get(str(lbl)) for lbl in sender_hc])
 plt.ylabel('', fontsize=10)
 plt.xlabel('Top 10 senders, hand-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
@@ -389,14 +420,14 @@ plt.tick_params(labelsize=5)
 # Targets
 
 plt.subplot(2,2,3)
-sns.barplot(x=target_mc, y=interactions_target_mc, alpha=1, palette="mako")
+sns.barplot(x=target_mc, y=interactions_target_mc, alpha=1, palette=[_label_to_color.get(str(lbl)) for lbl in target_mc])
 plt.ylabel('Number of cooperative interactions', fontsize=10)
 plt.xlabel('Top 10 targets, machine-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 plt.subplot(2,2,4)
-sns.barplot(x=target_hc, y=interactions_target_hc, alpha=1, palette="mako")
+sns.barplot(x=target_hc, y=interactions_target_hc, alpha=1, palette=[_label_to_color.get(str(lbl)) for lbl in target_hc])
 plt.ylabel('', fontsize=10)
 plt.xlabel('Top 10 targets, hand-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
@@ -437,16 +468,28 @@ interactions_sender_hc = top10_sender_hc['interactions_sender_hc']
 target_hc = top10_target_hc['target_hc']
 interactions_target_hc = top10_target_hc['interactions_target_hc']
 
+# Build a consistent color mapping across the four conflict subplots
+all_labels = pd.unique(
+    pd.concat([
+        top10_sender_mc['sender_mc'],
+        top10_sender_hc['sender_hc'],
+        top10_target_mc['target_mc'],
+        top10_target_hc['target_hc']
+    ], ignore_index=True).dropna().astype(str)
+)
+_shared_palette = sns.color_palette("mako", n_colors=len(all_labels))
+_label_to_color = {label: color for label, color in zip(all_labels, _shared_palette)}
+
 # make plots
 plt.subplot(2,2,1)
-sns.barplot(x=sender_mc, y=interactions_sender_mc, alpha=1, palette="mako")
+sns.barplot(x=sender_mc, y=interactions_sender_mc, alpha=1, palette=[_label_to_color.get(str(lbl)) for lbl in sender_mc])
 plt.ylabel('Number of conflictual interactions', fontsize=10)
 plt.xlabel('Top 10 senders, machine-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 plt.subplot(2,2,2)
-sns.barplot(x=sender_hc, y=interactions_sender_hc, alpha=1, palette="mako")
+sns.barplot(x=sender_hc, y=interactions_sender_hc, alpha=1, palette=[_label_to_color.get(str(lbl)) for lbl in sender_hc])
 plt.ylabel('', fontsize=10)
 plt.xlabel('Top 10 senders, hand-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
@@ -455,14 +498,14 @@ plt.tick_params(labelsize=5)
 # Targets mc
 
 plt.subplot(2,2,3)
-sns.barplot(x=target_mc, y=interactions_target_mc, alpha=1, palette="mako")
+sns.barplot(x=target_mc, y=interactions_target_mc, alpha=1, palette=[_label_to_color.get(str(lbl)) for lbl in target_mc])
 plt.ylabel('Number of conflictual interactions', fontsize=10)
 plt.xlabel('Top 10 targets, machine-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
 plt.tick_params(labelsize=5)
 
 plt.subplot(2,2,4)
-sns.barplot(x=target_hc, y=interactions_target_hc, alpha=1, palette="mako")
+sns.barplot(x=target_hc, y=interactions_target_hc, alpha=1, palette=[_label_to_color.get(str(lbl)) for lbl in target_hc])
 plt.ylabel('', fontsize=10)
 plt.xlabel('Top 10 targets, hand-coded dataset', fontsize=10)
 plt.xticks(rotation='vertical')
@@ -515,11 +558,23 @@ interactions_coop_hc = top20_hc_coop ['interactions_hc_coop']
 
 #%%
 
+# Build a consistent color mapping across the two coop subplots (shared by identical edges)
+_coop_all_edges = pd.unique(
+    pd.concat([edges_coop_mc.astype(str), edges_coop_hc.astype(str)], ignore_index=True).dropna()
+)
+_coop_palette = sns.color_palette("mako", n_colors=len(_coop_all_edges))
+_coop_edge_to_color = {label: color for label, color in zip(_coop_all_edges, _coop_palette)}
+
 plt.figure(figsize=(8,3.5))
 
 plt.subplot(1,2,1)
 
-sns.barplot(x=edges_coop_mc, y=interactions_coop_mc, alpha=0.8, palette="mako")
+sns.barplot(
+    x=edges_coop_mc,
+    y=interactions_coop_mc,
+    alpha=0.8,
+    palette=[_coop_edge_to_color.get(str(lbl)) for lbl in edges_coop_mc]
+)
 plt.tick_params(labelsize=5)
 plt.ylabel('Number of cooperative interactions', fontsize=10)
 plt.xlabel('Top 20 pairs, machine-coded dataset', fontsize=10)
@@ -527,7 +582,12 @@ plt.xticks(rotation='vertical')
 
 # hand-coded
 plt.subplot(1,2,2)
-sns.barplot(x=edges_coop_hc, y=interactions_coop_hc, alpha=0.8, palette="mako")
+sns.barplot(
+    x=edges_coop_hc,
+    y=interactions_coop_hc,
+    alpha=0.8,
+    palette=[_coop_edge_to_color.get(str(lbl)) for lbl in edges_coop_hc]
+)
 plt.tick_params(labelsize=5)
 plt.ylabel('', fontsize=10)
 plt.xlabel('Top 20 pairs, hand-coded dataset', fontsize=10)
@@ -568,11 +628,23 @@ interactions_conf_hc = top20_hc_conf ['interactions_hc_conf']
 
 #%%
 
+# Build a consistent color mapping across the two conflict subplots (shared by identical edges)
+_conf_all_edges = pd.unique(
+    pd.concat([edges_conf_mc.astype(str), edges_conf_hc.astype(str)], ignore_index=True).dropna()
+)
+_conf_palette = sns.color_palette("mako", n_colors=len(_conf_all_edges))
+_conf_edge_to_color = {label: color for label, color in zip(_conf_all_edges, _conf_palette)}
+
 plt.figure(figsize=(8,3.5))
 
 plt.subplot(1,2,1)
 
-sns.barplot(x=edges_conf_mc, y=interactions_conf_mc, alpha=0.8, palette="mako")
+sns.barplot(
+    x=edges_conf_mc,
+    y=interactions_conf_mc,
+    alpha=0.8,
+    palette=[_conf_edge_to_color.get(str(lbl)) for lbl in edges_conf_mc]
+)
 plt.tick_params(labelsize=5)
 plt.ylabel('Number of conflictual interactions', fontsize=10)
 plt.xlabel('Top 20 pairs, machine-coded dataset', fontsize=10)
@@ -580,7 +652,12 @@ plt.xticks(rotation='vertical')
 
 # hand-coded
 plt.subplot(1,2,2)
-sns.barplot(x=edges_conf_hc, y=interactions_conf_hc, alpha=0.8, palette="mako")
+sns.barplot(
+    x=edges_conf_hc,
+    y=interactions_conf_hc,
+    alpha=0.8,
+    palette=[_conf_edge_to_color.get(str(lbl)) for lbl in edges_conf_hc]
+)
 plt.tick_params(labelsize=5)
 plt.ylabel('Number of conflictual interactions', fontsize=10)
 plt.xlabel('Top 20 pairs, hand-coded dataset', fontsize=10)
