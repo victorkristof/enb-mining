@@ -1,5 +1,11 @@
 # Mine Data from Earth Negotiations Bulletin
 
+This algorithm scrapes and automatically codes the summaries of the United Nations Framework Convention on Climate Change (UNFCCC) negotiations published in the Earth Negotiations Bulletins (ENBs) to obtain information on:
+
+1. Which country parties or groupings speak in the negotiations and when (interventions) 
+2. In which cooperative or conflictual ways do parties and groupings interact with each other through their statements in the negotiations (interactions)
+3. Under which negotiation bodies and on which issue areas those interventions and interactions take place.
+
 ## Set up
 
 Install the requirements and the local library:
@@ -95,3 +101,16 @@ Here are examples of valid groupings:
 Central Group
 UG: Umbrella Group
 ```
+
+## Adapt the algorithm to record other environmental negotiations covered by the ENB
+
+To collect information from other environmental negotiations covered by the ENBs, several amendments to the scripts are needed. 
+Please, do this in your own downloaded versions of the scripts.
+1. The negotiation to be coded and the path to it within the ENB website need to be specified in the script client.py. 
+
+2. In the script 1-list-issues.py, the list of missing meetings needs to be adapted (in case some relevant ENB issues -- for example from the old archives -- exist but are not listed in the current ENB website structure) or turned to empty. 
+Also in this script, the negotiation to be coded needs to be specified in accordance to how it is defined in client.py, and the number of website pages updated. 
+
+3. The lists of parties and party groupings (and their aliases) need to be adapted to include those that are relevant to the negotiation being recorded.
+
+4. The lists of negotiation bodies and issue areas and their respective keywords, defined in the script “5-classify-headings.py”, need to be adapted.
