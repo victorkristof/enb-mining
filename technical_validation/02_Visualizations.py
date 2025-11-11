@@ -75,15 +75,17 @@ print(world.head())
 # Map Adjustments
 country_replacements = {
     "Antigua and Barbuda": "Antigua",
-    "Côte d'Ivoire": "Ivory Coast",
     "Democratic Republic of Congo": "Democratic Republic of the Congo",
     "Macedonia": "North Macedonia",
-    "Republic of Korea": "South Korea",
     "Saint Kitts and Nevis": "Saint Kitts",
     "Saint Vincent and the Grenadines": "Saint Vincent",
     "Trinidad and Tobago": "Trinidad",
-    # "United Kingdom": "UK",
-    # "United States": "USA"
+    "Laos": "Lao PDR",
+    "Gambia": "The Gambia",
+    "Russia": "Russian Federation",
+    "Swaziland": "Kingdom of eSwatini",
+    "Republic of Congo": "Republic of the Congo",
+    "Côte d'Ivoire": "Côte d'Ivoire" 
 }
 interventions['country'] = interventions['entity'].replace(country_replacements)
 #%%
@@ -101,9 +103,33 @@ interventions = duplicate_country(interventions, "Trinidad", "Tobago")
 
 # Merge with World Map
 world = world.rename(columns={"NAME_LONG": "country"})
+
+# Find out any differences between country names in interventions and world
+intervention_countries = set(interventions['country'].unique())
+world_countries = set(world['country'].unique())
+missing_in_world = intervention_countries - world_countries
+print("Countries in interventions not found in world map:", missing_in_world)
+# this looks ok now
+
+# Merge both datasets
 world = world.merge(interventions, on="country", how="left")
-interventions['country'] = interventions['entity'].replace(country_replacements)
 #%%
+
+# Ensure EU member states are colored using the EU total interventions
+# Define EU member states by the names used in the Natural Earth "NAME_LONG" field
+EU_MEMBERS = [
+    "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic",
+    "Denmark", "Estonia", "Finland", "France", "Germany", "Greece",
+    "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg",
+    "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia",
+    "Slovenia", "Spain", "Sweden"
+]
+
+# Get EU interventions count from the interventions table
+eu_n = interventions.loc[interventions['entity'] == 'EU', 'n']
+if not eu_n.empty:
+    eu_n_val = eu_n.max()
+    world.loc[world['country'].isin(EU_MEMBERS), 'n'] = eu_n_val
 
 world['interventions'] = pd.cut(
     world['n'],
