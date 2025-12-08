@@ -52,7 +52,13 @@ class Scraper:
     # The following function extracts a dictionary of headings-subheadings and sentences,
     # while keeping the current heading and/or subheading until a new one is found.
     def extract_sentences(self):
+        # Try to find modern HTML structure first
         content = self.soup.find('section', class_='o-content-from-editor--report')
+        
+        # If not found, try to extract from old HTML structure
+        if content is None:
+            content = self._extract_old_html_content()
+        
         paragraphs = self._get_paragraphs(content)
         tokenizer = SentenceTokenizer()
         headsentences = dict()
@@ -210,6 +216,47 @@ class Scraper:
 
         return headsentences
 
+    def _extract_old_html_content(self):
+        """Extracts content from old HTML structure.
+        
+        Finds all text between the start marker (first occurrence of a paragraph 
+        containing meeting title/date info) and the end marker (paragraph containing 
+        'THINGS TO LOOK FOR' or similar opinion sections).
+        """
+        # Find all paragraphs in the document
+        all_paragraphs = self.soup.find_all('p')
+        
+        if not all_paragraphs:
+            return None
+        
+        # Find the start index - look for paragraph after the header info
+        # This typically contains date and meeting information
+        start_idx = 0
+        for i, p in enumerate(all_paragraphs):
+            text = p.get_text().strip()
+            # Look for patterns like "2 - 12 June 1998" or "MEETINGS OF THE SUBSIDIARY BODIES"
+            if re.search(r'\d{1,2}\s*-\s*\d{1,2}\s+\w+\s+\d{4}', text) or \
+               'SUBSIDIARY BODIES' in text.upper() or \
+               'FRAMEWORK CONVENTION' in text.upper():
+                start_idx = i
+                break
+        
+        # Find the end index - look for "THINGS TO LOOK FOR" or similar opinion sections
+        end_idx = len(all_paragraphs)
+        for i in range(start_idx, len(all_paragraphs)):
+            text = all_paragraphs[i].get_text().strip()
+            if 'THINGS TO LOOK FOR' in text.upper() or 'IN THE CORRIDORS' in text.upper():
+                end_idx = i
+                break
+        
+        # Create a wrapper div to contain the relevant paragraphs
+        from bs4 import Tag
+        wrapper = self.soup.new_tag('div')
+        for p in all_paragraphs[start_idx:end_idx]:
+            wrapper.append(p)
+        
+        return wrapper
+
     @staticmethod
     def _get_paragraphs(content):
         """Filters only the paragraphs that are relevant, as well as the standalone heading tags.
@@ -237,6 +284,9 @@ class Scraper:
             ]
             return any([opinion in text for opinion in opinions])
 
+        if content is None:
+            return []
+        
         paragraphs = list()
         for node in content.children:
             if type(node) == Tag:
