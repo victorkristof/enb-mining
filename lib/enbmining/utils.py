@@ -27,7 +27,8 @@ def load_csv(path):
 
 
 def load_html(html_folder, issue_id):
-    path = html_folder / Path(issue_id).with_suffix('.html')
+    html_folder = Path(html_folder)
+    path = html_folder / Path(str(issue_id)).with_suffix('.html')
     with path.open(encoding="utf8") as f:
         return f.read()
 

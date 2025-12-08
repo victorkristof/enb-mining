@@ -10,6 +10,9 @@ def main(html_folder, issues_path, parties_path, groupings_path, output_path):
     parties = Party.load(parties_path)
     groupings = Grouping.load(groupings_path)
     issues = load_csv(issues_path)
+    
+    # Filter out empty issues
+    issues = [issue for issue in issues if issue.get('id') and issue['id'].strip()]
 
     # Extract interventions.
     print('Extracting interventions...')
