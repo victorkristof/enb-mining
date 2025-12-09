@@ -59,6 +59,28 @@ python scripts/4-scrape-interactions.py data/html data/issues.csv data/parties.t
 python scripts/5-classify-headings.py
 ```
 
+## Data updates
+
+Use script 6 if data for a specific negotiation has already been downloaded and processed, and only an update to add the latest ENB issues needs to be done.
+The script assumes that there is a file in data/issues.csv that lists all the ENB issues already scraped, and that there is a directory data/html containing the HTML versions of those ENBs.
+It also assumes that data/interventions.csv and data/interactions.csv exist and record all interventions and interactions from those ENB issues listed in issues.csv.
+It compares the list of meetings in issues.csv with the latest two pages of data on the ENB website for the corresponding negotiation, and creates a temporary new_issues.csv listing any new ENB issues identified.
+It proceeds to run scripts 2 to 4 on the new issues, and appends the recorded data to the existing interventions.csv and interactions.csv files.
+The HTML files for the new ENB issues are kept in the folder data/html_new.
+If a longer update is needed, script 6 may need to be adapted to look through more pages in the ENB website. 
+
+1. Update the interventions and interactions datasets:
+
+```
+python scripts/6-update-data.py
+```
+
+2. Reclassify all headings into negotiation bodies and issue areas:
+
+```
+python scripts/5-classify-headings.py
+```
+
 ## List of entities
 
 The scripts depend on lists of parties and party groupings (together referred to as "entities").
